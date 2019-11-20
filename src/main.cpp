@@ -2,9 +2,10 @@
 #include <FreeRTOS.h>
 #include "setupWiFi.h"
 #include "onScreen.h"
-
+//declare Tasks
 void taskScreen(void *parameter);
 void taskTwo(void *parameter);
+//Declare Objects
 setupWiFi *crtlWiFi;
 onScreen *crtlScreen;
 
@@ -21,7 +22,7 @@ void setup()
   xTaskCreate(
       taskScreen,   /* Task function. */
       "TaskScreen", /* String with name of task. */
-      10000,        /* Stack size in bytes. */
+      5000,        /* Stack size in bytes. */
       NULL,         /* Parameter passed as input of the task */
       1,            /* Priority of the task. */
       NULL);        /* Task handle. */
