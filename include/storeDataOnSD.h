@@ -5,5 +5,6 @@ private:
 public:
     storeDataOnSD(/* args */);
     ~storeDataOnSD();
+    void loop();
 };
 

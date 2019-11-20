@@ -5,5 +5,6 @@ private:
 public:
     streamData(/* args */);
     ~streamData();
+    void loop();
 };
 

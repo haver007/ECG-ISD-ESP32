@@ -5,5 +5,6 @@ private:
 public:
     storageAccess(/* args */);
     ~storageAccess();
+    void loop();
 };
 

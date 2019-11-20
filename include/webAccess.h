@@ -5,5 +5,5 @@ private:
 public:
     webAccess(/* args */);
     ~webAccess();
+    void loop();
 };
-

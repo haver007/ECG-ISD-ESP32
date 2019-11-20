@@ -5,4 +5,5 @@ private:
 public:
     readECGData(/* args */);
     ~readECGData();
+    void loop();
 };

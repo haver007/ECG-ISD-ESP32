@@ -10,4 +10,5 @@ public:
     setupWiFi(/* args */);
     ~setupWiFi();
     IPAddress getIP();
+    void loop();
 };
