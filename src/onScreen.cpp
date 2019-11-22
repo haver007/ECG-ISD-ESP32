@@ -18,10 +18,26 @@ void onScreen::loop()
 {
     while (1)
     {
-        int i, j;
-        uint8_t R, G, B, Dot1, Dot2;
+        //int i, j;
+        //uint8_t R, G, B, Dot1, Dot2;
+        static uint8_t _colon_fnt[2][16] = {
+    0b00000111,
+    0b00011000,
+    0b00110000,
+    0b00110000,
+    0b00011000,
+    0b00001100,
+    0b00000110,
+    0b00000011,
+    0b00000111,
+    0b00000110,
+    0b00001100,
+    0b00111000,
+    0b11100000
+    
+  };
 
-        ssd1331->Display_Clear(0, 0, 95, 63);
+      /*  ssd1331->Display_Clear(0, 0, 95, 63);
 
         ssd1331->CommandWrite(0xAE); //Set Display Off
         delay(1000);
@@ -117,7 +133,15 @@ void onScreen::loop()
         delay(2000);
 
         ssd1331->Display_Clear(0, 0, 95, 63);
-        ssd1331->Drawing_Rectangle_Line(20, 20, 40, 40, 31, 0, 0); //Red(0-31), Green(0-63), Blue(0-31)
+
+       */
+        ssd1331->Drawing_Rectangle_Line(0,0,95,31,0,31,0);
+        ssd1331->SSD1331_8x16_Font_DisplayOut(1,85,10,0,0,31,_colon_fnt);
+        delay(4000);
+
+       // ssd1331->Display_Clear(0, 0, 95, 63);
+
+      /*  ssd1331->Drawing_Rectangle_Line(20, 20, 40, 40, 31, 0, 0); //Red(0-31), Green(0-63), Blue(0-31)
         delay(2000);
 
         ssd1331->Drawing_Rectangle_Line(0, 0, 60, 60, 0, 31, 0); //Red(0-31), Green(0-63), Blue(0-31)
@@ -182,5 +206,6 @@ void onScreen::loop()
             delay(20);
         }
         delay(2000);
+        */
     }
-}
+} 
