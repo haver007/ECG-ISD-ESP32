@@ -18,10 +18,215 @@ void onScreen::loop()
 {
     while (1)
     {
-        int i, j;
-        uint8_t R, G, B, Dot1, Dot2;
+        //int i, j;
+        //uint8_t R, G, B, Dot1, Dot2;
+        static uint8_t _colon_fnt_S[2][16] = {
+        0b00011110,
+        0b01110000,
+        0b11100000,
+        0b11000000,
+        0b11000000,
+        0b11100000,
+        0b00111000,
+        0b00011100,
+        0b00000111,
+        0b00000011,
+        0b00000011,
+        0b00000111,
+        0b00001110,
+        0b00011100,
+        0b01110000,
+        0b11100000,
+        };
 
-        ssd1331->Display_Clear(0, 0, 95, 63);
+        static uint8_t _colon_fnt_T[2][16] = {
+        0b00011000,
+        0b00011000,
+        0b00011000,
+        0b00011000,
+        0b00011000,
+        0b00011000,
+        0b00011000,
+        0b00011000,
+        0b00011000,
+        0b00011000,
+        0b00011000,
+        0b00011000,
+        0b00011000,
+        0b00011000,
+        0b11111111,
+        0b11111111
+        };
+
+        static uint8_t _colon_fnt_A[2][16] = {
+        0b11000011,
+        0b11000011,
+        0b11000011,
+        0b11000011,
+        0b11000011,
+        0b11000011,
+        0b11000011,
+        0b11111111,
+        0b11111111,
+        0b11000011,
+        0b11000011,
+        0b11000011,
+        0b01100110,
+        0b01100110,
+        0b00011000,
+        0b00011000
+        };
+           static uint8_t _colon_fnt_R[2][16] = {
+        0b11000011,
+        0b11000011,
+        0b11000011,
+        0b11000011,
+        0b11000011,
+        0b11000011,
+        0b11000011,
+        0b11000011,
+        0b11111111,
+        0b11111111,
+        0b11000011,
+        0b11000011,
+        0b11000011,
+        0b11000011,
+        0b11111111,
+        0b11111111
+        };
+
+        static uint8_t _colon_fnt_P[2][16] = {
+        0b00000011,
+        0b00000011,
+        0b00000011,
+        0b00000011,
+        0b00000011,
+        0b00000011,
+        0b00000011,
+        0b00000011,
+        0b11111111,
+        0b11111111,
+        0b11000011,
+        0b11000011,
+        0b11000011,
+        0b11000011,
+        0b11111111,
+        0b11111111
+        };
+
+        static uint8_t _colon_fnt_U[2][16] = {
+        0b11111111,
+        0b11111111,
+        0b11000011,
+        0b11000011,
+        0b11000011, 
+        0b11000011, 
+        0b11000011, 
+        0b11000011, 
+        0b11000011, 
+        0b11000011, 
+        0b11000011, 
+        0b11000011, 
+        0b11000011, 
+        0b11000011, 
+        0b11000011, 
+        0b11000011
+        };
+        static uint8_t _colon_fnt_E[2][16] = {
+        0b11111111,
+        0b11111111,
+        0b00000011,
+        0b00000011,
+        0b00000011,
+        0b00000011,
+        0b00000011,
+        0b11111111,
+        0b11111111,
+        0b00000011,
+        0b00000011,
+        0b00000011,
+        0b00000011,
+        0b00000011,
+        0b11111111,
+        0b11111111
+        };
+        
+        static uint8_t _colon_fnt_N[2][16] = {  
+        0b11000011,
+        0b11000011,
+        0b11000011,
+        0b11000011,
+        0b11000011,
+        0b11000011,
+        0b11000011,
+        0b11000011,
+        0b11000011,
+        0b11000011,
+        0b11000011,
+        0b11000011,
+        0b11000011,
+        0b11000011,
+        0b11111111,
+        0b11111111,
+        };
+
+        static uint8_t _colon_fnt_I[2][16] = { 
+        0b00011000,
+        0b00011000,
+        0b00011000,
+        0b00011000,
+        0b00011000,
+        0b00011000,
+        0b00011000,
+        0b00011000,
+        0b00011000,
+        0b00011000,
+        0b00011000,
+        0b00011000,
+        0b00011000,
+        0b00011000,
+        0b00011000,
+        0b00011000,
+        };
+
+        static uint8_t _colon_fnt_L[2][16] = { 
+        0b11111111,
+        0b11111111,
+        0b00000011,
+        0b00000011,
+        0b00000011,
+        0b00000011,
+        0b00000011,
+        0b00000011,
+        0b00000011,
+        0b00000011,
+        0b00000011,
+        0b00000011,
+        0b00000011,
+        0b00000011,
+        0b00000011,
+        0b00000011
+        };
+
+        static uint8_t _colon_fnt_F[2][16] = {
+        0b00000011,
+        0b00000011,
+        0b00000011,
+        0b00000011,
+        0b00000011,
+        0b00000011,
+        0b00000011,
+        0b00000011,
+        0b11111111,
+        0b11111111,
+        0b00000011,
+        0b00000011,
+        0b00000011,
+        0b00000011,
+        0b11111111,
+        0b11111111
+        };
+      /*  ssd1331->Display_Clear(0, 0, 95, 63);
 
         ssd1331->CommandWrite(0xAE); //Set Display Off
         delay(1000);
@@ -117,7 +322,54 @@ void onScreen::loop()
         delay(2000);
 
         ssd1331->Display_Clear(0, 0, 95, 63);
-        ssd1331->Drawing_Rectangle_Line(20, 20, 40, 40, 31, 0, 0); //Red(0-31), Green(0-63), Blue(0-31)
+
+       */
+        // *********Display 95X63***********
+        //*****write 'START' on the display****************
+        ssd1331->Drawing_Rectangle_Line(0,15,95,46,0,31,0);
+        ssd1331->SSD1331_8x16_Font_DisplayOut(1,65,23,0,0,31,_colon_fnt_S);//Red(0-31), Green(0-63), Blue(0-31)
+        ssd1331->SSD1331_8x16_Font_DisplayOut(1,55,23,0,0,31,_colon_fnt_T);
+        ssd1331->SSD1331_8x16_Font_DisplayOut(1,45,23,0,0,31,_colon_fnt_A);
+        ssd1331->SSD1331_8x16_Font_DisplayOut(1,35,23,0,0,31,_colon_fnt_R);
+        ssd1331->SSD1331_8x16_Font_DisplayOut(1,25,23,0,0,31,_colon_fnt_T);
+        delay(4000);
+
+        ssd1331->Display_Clear(0, 0, 95, 63);
+        
+        //******write 'PAUSE' on the display**************
+        ssd1331->Drawing_Rectangle_Line(0,15,95,46,0,31,0);
+        ssd1331->SSD1331_8x16_Font_DisplayOut(1,65,23,0,0,31,_colon_fnt_P);//Red(0-31), Green(0-63), Blue(0-31)
+        ssd1331->SSD1331_8x16_Font_DisplayOut(1,55,23,0,0,31,_colon_fnt_A);
+        ssd1331->SSD1331_8x16_Font_DisplayOut(1,45,23,0,0,31,_colon_fnt_U);
+        ssd1331->SSD1331_8x16_Font_DisplayOut(1,35,23,0,0,31,_colon_fnt_S);
+        ssd1331->SSD1331_8x16_Font_DisplayOut(1,25,23,0,0,31,_colon_fnt_E);
+        delay(4000);
+
+        
+        ssd1331->Display_Clear(0, 0, 95, 63);
+
+        //****** write 'RUN' on the display*********
+        ssd1331->Drawing_Rectangle_Line(0,15,95,46,0,31,0);
+        ssd1331->SSD1331_8x16_Font_DisplayOut(1,55,23,0,0,31,_colon_fnt_R);//Red(0-31), Green(0-63), Blue(0-31)
+        ssd1331->SSD1331_8x16_Font_DisplayOut(1,45,23,0,0,31,_colon_fnt_U);
+        ssd1331->SSD1331_8x16_Font_DisplayOut(1,35,23,0,0,31,_colon_fnt_N);
+        delay(4000);
+
+        ssd1331->Display_Clear(0, 0, 95, 63);
+
+        //*****write 'FAILURE' on the display****************
+        ssd1331->Drawing_Rectangle_Line(0,15,95,46,31,0,0);
+        ssd1331->SSD1331_8x16_Font_DisplayOut(1,75,23,31,0,0,_colon_fnt_F);//Red(0-31), Green(0-63), Blue(0-31)
+        ssd1331->SSD1331_8x16_Font_DisplayOut(1,65,23,31,0,0,_colon_fnt_A);
+        ssd1331->SSD1331_8x16_Font_DisplayOut(1,55,23,31,0,0,_colon_fnt_I);
+        ssd1331->SSD1331_8x16_Font_DisplayOut(1,45,23,31,0,0,_colon_fnt_L);
+        ssd1331->SSD1331_8x16_Font_DisplayOut(1,35,23,31,0,0,_colon_fnt_U);
+        ssd1331->SSD1331_8x16_Font_DisplayOut(1,25,23,31,0,0,_colon_fnt_R);
+        ssd1331->SSD1331_8x16_Font_DisplayOut(1,15,23,31,0,0,_colon_fnt_E);
+        delay(4000);
+
+         ssd1331->Display_Clear(0, 0, 95, 63);
+      /*  ssd1331->Drawing_Rectangle_Line(20, 20, 40, 40, 31, 0, 0); //Red(0-31), Green(0-63), Blue(0-31)
         delay(2000);
 
         ssd1331->Drawing_Rectangle_Line(0, 0, 60, 60, 0, 31, 0); //Red(0-31), Green(0-63), Blue(0-31)
@@ -182,5 +434,6 @@ void onScreen::loop()
             delay(20);
         }
         delay(2000);
+        */
     }
-}
+} 
