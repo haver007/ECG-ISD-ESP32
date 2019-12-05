@@ -2,20 +2,23 @@
 
 onScreen::onScreen(/* args */)
 {
-    ssd1331 = new ESP32_SSD1331(SCLK_OLED, MISO_OLED, MOSI_OLED, CS_OLED, DC_OLED, RST_OLED);
-    ssd1331->SSD1331_Init();
+    ssd1331OLED = new SSD1331Extended(SCLK_OLED, MISO_OLED, MOSI_OLED, CS_OLED, DC_OLED, RST_OLED);
+    ssd1331OLED->SSD1331_Init();
+    pinMode(36, INPUT);
+
 }
 
 onScreen::~onScreen()
 {
-    if (ssd1331 != NULL)
+    if (ssd1331OLED != NULL)
     {
-        delete ssd1331;
-        ssd1331 = NULL;
+        delete ssd1331OLED;
+        ssd1331OLED = NULL;
     }
 }
 void onScreen::loop()
 {
+    
     while (1)
     {
         //int i, j;
@@ -326,49 +329,53 @@ void onScreen::loop()
        */
         // *********Display 95X63***********
         //*****write 'START' on the display****************
-        ssd1331->Drawing_Rectangle_Line(0,15,95,46,0,31,0);
-        ssd1331->SSD1331_8x16_Font_DisplayOut(1,65,23,0,0,31,_colon_fnt_S);//Red(0-31), Green(0-63), Blue(0-31)
-        ssd1331->SSD1331_8x16_Font_DisplayOut(1,55,23,0,0,31,_colon_fnt_T);
-        ssd1331->SSD1331_8x16_Font_DisplayOut(1,45,23,0,0,31,_colon_fnt_A);
-        ssd1331->SSD1331_8x16_Font_DisplayOut(1,35,23,0,0,31,_colon_fnt_R);
-        ssd1331->SSD1331_8x16_Font_DisplayOut(1,25,23,0,0,31,_colon_fnt_T);
+        
+        /*ssd1331OLED->Drawing_Rectangle_Line(0,15,95,46,0,31,0);
+        ssd1331OLED->SSD1331_8x16_Font_DisplayOut(1,65,23,0,0,31,_colon_fnt_S);//Red(0-31), Green(0-63), Blue(0-31)
+        ssd1331OLED->SSD1331_8x16_Font_DisplayOut(1,55,23,0,0,31,_colon_fnt_T);
+        ssd1331OLED->SSD1331_8x16_Font_DisplayOut(1,45,23,0,0,31,_colon_fnt_A);
+        ssd1331OLED->SSD1331_8x16_Font_DisplayOut(1,35,23,0,0,31,_colon_fnt_R);
+        ssd1331OLED->SSD1331_8x16_Font_DisplayOut(1,25,23,0,0,31,_colon_fnt_T);*/
+        
+        ssd1331OLED->setTextAlignment(TEXT_ALIGN_CENTER_BOTH);
+        ssd1331OLED->setFont(ArialMT_Plain_10);
+        ssd1331OLED->drawString(20,30,"START",BLUE);
         delay(4000);
-
-        ssd1331->Display_Clear(0, 0, 95, 63);
+        ssd1331OLED->Display_Clear(0, 0, 95, 63);
         
         //******write 'PAUSE' on the display**************
-        ssd1331->Drawing_Rectangle_Line(0,15,95,46,0,31,0);
-        ssd1331->SSD1331_8x16_Font_DisplayOut(1,65,23,0,0,31,_colon_fnt_P);//Red(0-31), Green(0-63), Blue(0-31)
-        ssd1331->SSD1331_8x16_Font_DisplayOut(1,55,23,0,0,31,_colon_fnt_A);
-        ssd1331->SSD1331_8x16_Font_DisplayOut(1,45,23,0,0,31,_colon_fnt_U);
-        ssd1331->SSD1331_8x16_Font_DisplayOut(1,35,23,0,0,31,_colon_fnt_S);
-        ssd1331->SSD1331_8x16_Font_DisplayOut(1,25,23,0,0,31,_colon_fnt_E);
+        ssd1331OLED->Drawing_Rectangle_Line(0,15,95,46,0,31,0);
+        ssd1331OLED->SSD1331_8x16_Font_DisplayOut(1,65,23,0,0,31,_colon_fnt_P);//Red(0-31), Green(0-63), Blue(0-31)
+        ssd1331OLED->SSD1331_8x16_Font_DisplayOut(1,55,23,0,0,31,_colon_fnt_A);
+        ssd1331OLED->SSD1331_8x16_Font_DisplayOut(1,45,23,0,0,31,_colon_fnt_U);
+        ssd1331OLED->SSD1331_8x16_Font_DisplayOut(1,35,23,0,0,31,_colon_fnt_S);
+        ssd1331OLED->SSD1331_8x16_Font_DisplayOut(1,25,23,0,0,31,_colon_fnt_E);
         delay(4000);
 
         
-        ssd1331->Display_Clear(0, 0, 95, 63);
+        ssd1331OLED->Display_Clear(0, 0, 95, 63);
 
         //****** write 'RUN' on the display*********
-        ssd1331->Drawing_Rectangle_Line(0,15,95,46,0,31,0);
-        ssd1331->SSD1331_8x16_Font_DisplayOut(1,55,23,0,0,31,_colon_fnt_R);//Red(0-31), Green(0-63), Blue(0-31)
-        ssd1331->SSD1331_8x16_Font_DisplayOut(1,45,23,0,0,31,_colon_fnt_U);
-        ssd1331->SSD1331_8x16_Font_DisplayOut(1,35,23,0,0,31,_colon_fnt_N);
+        ssd1331OLED->Drawing_Rectangle_Line(0,15,95,46,0,31,0);
+        ssd1331OLED->SSD1331_8x16_Font_DisplayOut(1,55,23,0,0,31,_colon_fnt_R);//Red(0-31), Green(0-63), Blue(0-31)
+        ssd1331OLED->SSD1331_8x16_Font_DisplayOut(1,45,23,0,0,31,_colon_fnt_U);
+        ssd1331OLED->SSD1331_8x16_Font_DisplayOut(1,35,23,0,0,31,_colon_fnt_N);
         delay(4000);
 
-        ssd1331->Display_Clear(0, 0, 95, 63);
+        ssd1331OLED->Display_Clear(0, 0, 95, 63);
 
         //*****write 'FAILURE' on the display****************
-        ssd1331->Drawing_Rectangle_Line(0,15,95,46,31,0,0);
-        ssd1331->SSD1331_8x16_Font_DisplayOut(1,75,23,31,0,0,_colon_fnt_F);//Red(0-31), Green(0-63), Blue(0-31)
-        ssd1331->SSD1331_8x16_Font_DisplayOut(1,65,23,31,0,0,_colon_fnt_A);
-        ssd1331->SSD1331_8x16_Font_DisplayOut(1,55,23,31,0,0,_colon_fnt_I);
-        ssd1331->SSD1331_8x16_Font_DisplayOut(1,45,23,31,0,0,_colon_fnt_L);
-        ssd1331->SSD1331_8x16_Font_DisplayOut(1,35,23,31,0,0,_colon_fnt_U);
-        ssd1331->SSD1331_8x16_Font_DisplayOut(1,25,23,31,0,0,_colon_fnt_R);
-        ssd1331->SSD1331_8x16_Font_DisplayOut(1,15,23,31,0,0,_colon_fnt_E);
+        ssd1331OLED->Drawing_Rectangle_Line(0,15,95,46,31,0,0);
+        ssd1331OLED->SSD1331_8x16_Font_DisplayOut(1,75,23,31,0,0,_colon_fnt_F);//Red(0-31), Green(0-63), Blue(0-31)
+        ssd1331OLED->SSD1331_8x16_Font_DisplayOut(1,65,23,31,0,0,_colon_fnt_A);
+        ssd1331OLED->SSD1331_8x16_Font_DisplayOut(1,55,23,31,0,0,_colon_fnt_I);
+        ssd1331OLED->SSD1331_8x16_Font_DisplayOut(1,45,23,31,0,0,_colon_fnt_L);
+        ssd1331OLED->SSD1331_8x16_Font_DisplayOut(1,35,23,31,0,0,_colon_fnt_U);
+        ssd1331OLED->SSD1331_8x16_Font_DisplayOut(1,25,23,31,0,0,_colon_fnt_R);
+        ssd1331OLED->SSD1331_8x16_Font_DisplayOut(1,15,23,31,0,0,_colon_fnt_E);
         delay(4000);
 
-         ssd1331->Display_Clear(0, 0, 95, 63);
+         ssd1331OLED->Display_Clear(0, 0, 95, 63);
       /*  ssd1331->Drawing_Rectangle_Line(20, 20, 40, 40, 31, 0, 0); //Red(0-31), Green(0-63), Blue(0-31)
         delay(2000);
 

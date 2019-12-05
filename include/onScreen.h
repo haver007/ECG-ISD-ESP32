@@ -1,4 +1,8 @@
+#define COLOR_SCREEN
+
 #include "ESP32_SSD1331.h"
+#include "SSD1331Extended.h"
+#include "fonts.h"
 
 class onScreen
 {
@@ -9,7 +13,9 @@ private:
     const uint8_t CS_OLED = 15;
     const uint8_t DC_OLED = 16; //OLED DC(Data/Command)
     const uint8_t RST_OLED = 4; //OLED Reset
-    ESP32_SSD1331* ssd1331;
+    SSD1331Extended* ssd1331OLED;
+ 
+    
 public:
     onScreen(/* args */);
     ~onScreen();
