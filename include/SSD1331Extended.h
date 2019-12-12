@@ -151,7 +151,7 @@ enum OLEDDISPLAY_COLOR {
   BLUE = RGB16(0, 0, 31),
 
   RED = RGB16(31,0,0),
-
+  
   GREEN = RGB16(0,63,0),
 
   YELLOW = RGB16(31,63,0),
