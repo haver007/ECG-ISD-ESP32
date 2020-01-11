@@ -1,7 +1,7 @@
 #include <WebServer.h>
 #include <ESPmDNS.h>
 #include <SPI.h>
-#include "mySD.h"
+#include "SD.h"
 
 class webAccess
 {
@@ -11,6 +11,7 @@ WebServer server;
 bool hasSD = false;
 File uploadFile;
 const char* host = "ecg";
+enum { sd_sck = 18, sd_miso = 19, sd_mosi = 23, sd_ss = 5 };
 /* Functions*/
 void returnOK();
 void returnFail(String msg);

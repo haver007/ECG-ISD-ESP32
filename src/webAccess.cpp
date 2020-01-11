@@ -14,17 +14,12 @@ webAccess::webAccess(/* args */) : server(80)
     server.onNotFound(std::bind(&webAccess::handleNotFound, this));
     server.begin();
 
-      Serial.begin(115200);
-
-  Serial.print("Initializing SD card...");
-  /* initialize SD library with SPI pins */
- if (!SD.begin(23, 5, 19, 18)) {
-    Serial.println("initialization failed!");
-  }
-    // if (SD.begin(23, 5, 19, 18)){ // todo add if init done before
-    // hasSD = true;
-  // }
-
+    SPI.begin(sd_sck, sd_miso, sd_mosi, sd_ss);
+    /* initialize SD library with SPI pins */
+    if (SD.begin(sd_ss, SPI, 24000000))
+    {
+        hasSD = true;
+    }
 }
 
 webAccess::~webAccess()
@@ -35,7 +30,7 @@ void webAccess::loop()
 {
     while (1)
     {
-          server.handleClient();
+        server.handleClient();
     }
 }
 
@@ -203,7 +198,7 @@ void webAccess::handleCreate()
         File file = SD.open((char *)path.c_str(), FILE_WRITE);
         if (file)
         {
-            file.write((const char *)0);
+            file.write(NULL, 0);
             file.close();
         }
     }
