@@ -6,6 +6,7 @@ setupWiFi::setupWiFi(/* args */)
 
 setupWiFi::~setupWiFi()
 {
+    turnOff();
 }
 
 IPAddress setupWiFi::getIP()
@@ -15,10 +16,10 @@ IPAddress setupWiFi::getIP()
 
 bool setupWiFi::turnOff()
 {
-    WiFi.softAPdisconnect(true);
+   return  WiFi.softAPdisconnect(true);
 }
 
 bool setupWiFi::turnOn()
 {
-    WiFi.softAP(ssid, password);
+   return WiFi.softAP(ssid, password);
 }
