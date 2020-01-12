@@ -14,12 +14,7 @@ webAccess::webAccess(/* args */) : server(80)
     server.onNotFound(std::bind(&webAccess::handleNotFound, this));
     server.begin();
 
-    SPI.begin(sd_sck, sd_miso, sd_mosi, sd_ss);
-    /* initialize SD library with SPI pins */
-    if (SD.begin(sd_ss, SPI, 24000000))
-    {
-        hasSD = true;
-    }
+    
 }
 
 webAccess::~webAccess()

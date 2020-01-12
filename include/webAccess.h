@@ -8,7 +8,7 @@ class webAccess
 private:
 /*Vars*/
 WebServer server;
-bool hasSD = false;
+bool hasSD = true;
 File uploadFile;
 const char* host = "ecg";
 enum { sd_sck = 18, sd_miso = 19, sd_mosi = 23, sd_ss = 5 };
