@@ -14,8 +14,8 @@ class onScreen
     ~onScreen();
     void loop();
     //Defining States and Events for the State Machine
-    enum class State {Menue_1_active, Menue_2_active, Menue_3_active, Measurement_active, WLAN_on, Info_SD};
-    enum class Event {right_pressed,left_pressed, down_pressed, up_pressed};
+    enum class State {Failure, Menue_1_active, Menue_2_active, Menue_3_active, Measurement_active, WLAN_toggle, Info_SD, Idle};
+    enum class Event {right_pressed,left_pressed, down_pressed, up_pressed,none};
 
     /* --Returns the current state. */
 	State state() const;
@@ -26,14 +26,7 @@ class onScreen
 	void start();
 	/* --Restart the state machine. */
 	void restart();
-	/* --Sets the state explicitly. */
-	void state(State s);
-	/* --Process state transition; returns new state. */
-	void transition(Event ev);
-
-    /* --Constant names for debugging purpose. */
-	static const std::map<State, std::string> StateDescription;
-	static const std::map<Event, std::string> EventDescription;
+	
 
 private:
     const uint8_t SCLK_OLED = 14; //SCLK
@@ -45,17 +38,33 @@ private:
     SSD1331Extended* ssd1331OLED;
 
     State mystate;
-	int count;
 
 	/* --Methods called when entering a state. */
 	void onEntering_Menue_1_active();
     void onEntering_Menue_2_active();
     void onEntering_Menue_3_active();
-
+    void onEntering_Measurement_active();
+    void onEntering_Info_SD();
+    void onEntering_WLAN_toggle();
+    void onEntering_Idle();
+    void onEntering_Failure();
 
 	/* --Methods called when leaving a state. */
 	void onLeaving_Menue_1_active();
     void onLeaving_Menue_2_active();
     void onLeaving_Menue_3_active();
+    void onLeaving_Measurement_active();
+    void onLeaving_Info_SD();
+    void onLeaving_WLAN_toggle();
+    void onLeaving_Idle();
+    void onLeaving_Failure();
 
+    /* --Sets the state explicitly. */
+	void state(State s);
+	/* --Process state transition; returns new state. */
+	void transition(Event ev);
+
+    /* --Constant names for debugging purpose. */
+	static const std::map<State, std::string> StateDescription;
+	static const std::map<Event, std::string> EventDescription;
 };
