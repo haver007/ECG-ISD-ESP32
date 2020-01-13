@@ -3,9 +3,38 @@
 #include "ESP32_SSD1331.h"
 #include "SSD1331Extended.h"
 #include "fonts.h"
+#include <map>
+#include <string>
+using namespace std;
 
 class onScreen
 {
+    public:
+    onScreen(/* args */);
+    ~onScreen();
+    void loop();
+    //Defining States and Events for the State Machine
+    enum class State {Menue_1_active, Menue_2_active, Menue_3_active, Measurement_active, WLAN_on, Info_SD};
+    enum class Event {right_pressed,left_pressed, down_pressed, up_pressed};
+
+    /* --Returns the current state. */
+	State state() const;
+	/* --Process the event using state transitions. */
+	void handle(Event ev);
+
+	/* --Start the state machine, set initial state. */
+	void start();
+	/* --Restart the state machine. */
+	void restart();
+	/* --Sets the state explicitly. */
+	void state(State s);
+	/* --Process state transition; returns new state. */
+	void transition(Event ev);
+
+    /* --Constant names for debugging purpose. */
+	static const std::map<State, std::string> StateDescription;
+	static const std::map<Event, std::string> EventDescription;
+
 private:
     const uint8_t SCLK_OLED = 14; //SCLK
     const uint8_t MOSI_OLED = 13; //MOSI (Master Output Slave Input)
@@ -14,10 +43,19 @@ private:
     const uint8_t DC_OLED = 16; //OLED DC(Data/Command)
     const uint8_t RST_OLED = 4; //OLED Reset
     SSD1331Extended* ssd1331OLED;
- 
-    
-public:
-    onScreen(/* args */);
-    ~onScreen();
-    void loop();
+
+    State mystate;
+	int count;
+
+	/* --Methods called when entering a state. */
+	void onEntering_Menue_1_active();
+    void onEntering_Menue_2_active();
+    void onEntering_Menue_3_active();
+
+
+	/* --Methods called when leaving a state. */
+	void onLeaving_Menue_1_active();
+    void onLeaving_Menue_2_active();
+    void onLeaving_Menue_3_active();
+
 };
