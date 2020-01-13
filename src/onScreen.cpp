@@ -52,10 +52,15 @@ void onScreen::onEntering_Menue_1_active(){
             state(State::Menue_1_active);
 }
 void onScreen::onEntering_Menue_2_active(){
-
+    state(State::Menue_2_active);
+    ssd1331OLED->Drawing_Rectangle_Line(0,0,60,20,0,31,0);
+    ssd1331OLED->Drawing_Rectangle_Line(0,22,60,41,31,0,0);
+    
 }
 void onScreen::onEntering_Menue_3_active(){
-
+    state(State::Menue_3_active);
+    ssd1331OLED->Drawing_Rectangle_Line(0,22,60,41,0,31,0);
+    ssd1331OLED->Drawing_Rectangle_Line(0,43,60,62,31,0,0);
 }
 void onScreen::onEntering_Measurement_active(){
 
