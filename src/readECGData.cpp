@@ -2,6 +2,7 @@
 
 readECGData::readECGData(/* args */)
 {
+    dataLock = xSemaphoreCreateMutex();
 }
 
 readECGData::~readECGData()
