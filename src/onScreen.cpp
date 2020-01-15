@@ -23,9 +23,9 @@ onScreen::onScreen(/* args */)
     ssd1331OLED = new SSD1331Extended(SCLK_OLED, MISO_OLED, MOSI_OLED, CS_OLED, DC_OLED, RST_OLED);
     ssd1331OLED->SSD1331_Init();
     pinMode(36, INPUT);
-    pinMode(34, INPUT);
-    pinMode(33, INPUT);
-    pinMode(32, INPUT);
+    pinMode(34, INPUT_PULLDOWN);
+    pinMode(33, INPUT_PULLDOWN);
+    pinMode(32, INPUT_PULLDOWN);
     //initialize state of Menu (IDLE)
     start();
 
@@ -39,27 +39,17 @@ onScreen::~onScreen()
     }
 }
 void onScreen::onEntering_Menue_1_active(){
-        //
-            ssd1331OLED->Drawing_Rectangle_Line(0,0,60,20,31,0,0);
-            ssd1331OLED->Drawing_Rectangle_Line(0,22,60,41,0,31,0);
-            ssd1331OLED->Drawing_Rectangle_Line(0,43,60,62,0,31,0);
-            ssd1331OLED->setTextAlignment(TEXT_ALIGN_RIGHT); 
-            ssd1331OLED->setFont(Lato_Hairline_16);
-            //Blue = yellow :D
-            ssd1331OLED->drawString(50,1,"START",BLUE);
-            ssd1331OLED->drawString(50,21,"WLAN",BLUE);
-            ssd1331OLED->drawString(50,41,"INFO",BLUE);
-            state(State::Menue_1_active);
+    state(State::Menue_1_active);
+    ssd1331OLED->Drawing_Rectangle_Line(0,0,60,20,31,0,0);
+            
 }
 void onScreen::onEntering_Menue_2_active(){
     state(State::Menue_2_active);
-    ssd1331OLED->Drawing_Rectangle_Line(0,0,60,20,0,31,0);
     ssd1331OLED->Drawing_Rectangle_Line(0,22,60,41,31,0,0);
     
 }
 void onScreen::onEntering_Menue_3_active(){
     state(State::Menue_3_active);
-    ssd1331OLED->Drawing_Rectangle_Line(0,22,60,41,0,31,0);
     ssd1331OLED->Drawing_Rectangle_Line(0,43,60,62,31,0,0);
 }
 void onScreen::onEntering_Measurement_active(){
@@ -79,13 +69,13 @@ void onScreen::onEntering_Failure(){
 
 }
 void onScreen::onLeaving_Menue_1_active(){
-
+    ssd1331OLED->Drawing_Rectangle_Line(0,0,60,20,0,31,0);
 }
 void onScreen::onLeaving_Menue_2_active(){
-
+    ssd1331OLED->Drawing_Rectangle_Line(0,22,60,41,0,31,0);
 }
 void onScreen::onLeaving_Menue_3_active(){
-
+    ssd1331OLED->Drawing_Rectangle_Line(0,43,60,62,0,31,0);
 }
 void onScreen::onLeaving_Measurement_active(){
 
@@ -98,7 +88,15 @@ void onScreen::onLeaving_WLAN_toggle(){
 
 }
 void onScreen::onLeaving_Idle(){
-
+            //Setup Menue when changing from idle to active
+            ssd1331OLED->Drawing_Rectangle_Line(0,22,60,41,0,31,0);
+            ssd1331OLED->Drawing_Rectangle_Line(0,43,60,62,0,31,0);
+            ssd1331OLED->setTextAlignment(TEXT_ALIGN_RIGHT); 
+            ssd1331OLED->setFont(Lato_Hairline_16);
+            //Blue = yellow :D
+            ssd1331OLED->drawString(50,1,"START",BLUE);
+            ssd1331OLED->drawString(50,21,"WLAN",BLUE);
+            ssd1331OLED->drawString(50,41,"INFO",BLUE);
 }
 void onScreen::onLeaving_Failure(){
 
@@ -117,7 +115,7 @@ void onScreen:: state (State s){
 onScreen::State onScreen::state() const { return mystate; }
 void onScreen::start() {
 	
-	/* --Start with initial transition. */
+	/* --Start with initial transition Idle (display off). */
 	onEntering_Idle();
 	
 }
@@ -125,10 +123,8 @@ void onScreen::restart() {
 	/* --Same as start. */
 	start();
 }
-/* --INFO: Do not touch this method. */
 void onScreen::handle(Event ev) {
 	State old = mystate;
-
 	/* --Logging information. */
 	//bool isEventAvailable = (EventDescription.find(ev) != EventDescription.end());
 	/* --If program stops here, you have to add an event description to the map at top of this file !!! */
@@ -140,7 +136,7 @@ void onScreen::handle(Event ev) {
 
 }
 void onScreen::transition(Event ev){
-    /* --State machine as nested switch case. */
+    /* --State machine as nested switch case for menue. */
 	switch (mystate) {
 	case State::Idle:
 		switch (ev) {
@@ -206,6 +202,7 @@ void onScreen::transition(Event ev){
 	};
 }
 
+//Method for checking Input changes
 void onScreen::loop()
 {   
     while (1)
@@ -213,16 +210,20 @@ void onScreen::loop()
         Event ev= Event::none;
         if(digitalRead(36)==0){
             ev= Event::right_pressed;
+            delay(500);
         }
         
         if(digitalRead(34)==1){
             ev= Event::left_pressed;
+            delay(400);
         }
         if(digitalRead(32)==1){
             ev= Event::down_pressed;
+            delay(400);
         }
         if(digitalRead(33)==1){
             ev= Event::up_pressed;
+            delay(400);
         }
         
         if (ev != Event::none)
