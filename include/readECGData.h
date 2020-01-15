@@ -1,14 +1,19 @@
 #include "ADAS1000.h"
-#include <Arduino_FreeRTOS.h>
+#include <FreeRTOS.h>
 
 class readECGData
 {
 private:
-SemaphoreHandle_t dataLock;
-    /* data */
+    SemaphoreHandle_t dataLock;
+    Leadformat format;
+    ADAS1000 *adas1000;
+    float read(void);
+
 public:
-    readECGData(/* args */);
+    readECGData(RingbufHandle_t &buffer);
     ~readECGData();
+    void initialize(int divider);
+    void setFormat(Leadformat format);
     void loop();
-    std::string getData(); 
+    std::string getData();
 };

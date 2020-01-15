@@ -19,6 +19,7 @@ webAccess::webAccess(/* args */) : server(80)
 
 webAccess::~webAccess()
 {
+    server.stop();
 }
 
 void webAccess::loop()

@@ -21,28 +21,32 @@ enum
   sd_mosi = 23,
   sd_ss = 5
 };
+
+RingbufHandle_t dataBuffer;
+
 SPIClass spiSd(HSPI);
 
 void setup()
 {
   //setup Serial for Debugging
   Serial.begin(9600);
+  // Setup Vars
+  dataBuffer = xRingbufferCreate(1028, RINGBUF_TYPE_NOSPLIT);
   //Setup Objects
-
   crtlWiFi = new setupWiFi;
   crtlWiFi->turnOn(); //TODO move to MENU
                       // Give Time to Complete Wifi
   delay(2000);
-
   crtlScreen = new onScreen;
+
+
   spiSd.begin(sd_sck, sd_miso, sd_mosi, sd_ss);
   /* initialize SD library with SPI pins */
   if (SD.begin(sd_ss, spiSd, 24000000))
   {
     crtlWeb = new webAccess; //This should be done some where in Menu! TODO
   }
-  // Give Time to Complete Wifi
-  delay(2000);
+
 
   //Create Display Task
   xTaskCreate(
