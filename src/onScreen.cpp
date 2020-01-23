@@ -49,13 +49,13 @@ void onScreen::onEntering_UnterMenue_1_active(){
      ssd1331OLED->Display_Clear_all();
      ssd1331OLED->setTextAlignment(TEXT_ALIGN_CENTER); 
      ssd1331OLED->setFont(Lato_Hairline_10);
-     ssd1331OLED->drawString(47,0,"Start Measurement?",BLUE);
+     ssd1331OLED->drawString(47,3,"Start Measurement?",BLUE);
      ssd1331OLED->setTextAlignment(TEXT_ALIGN_RIGHT);
      ssd1331OLED->setFont(Lato_Hairline_16);
-     ssd1331OLED->Drawing_Rectangle_Line(0,22,60,41,31,0,0);
-     ssd1331OLED->drawString(50,21,"YES",BLUE);     
-     ssd1331OLED->Drawing_Rectangle_Line(0,43,60,62,31,0,0);
-     ssd1331OLED->drawString(50,41,"NO",BLUE);
+     ssd1331OLED->Drawing_Rectangle_Line(25,22,67,41,31,0,0);
+     ssd1331OLED->drawString(57,21,"YES",BLUE);     
+     ssd1331OLED->Drawing_Rectangle_Line(25,43,67,62,0,31,0);
+     ssd1331OLED->drawString(57,43,"NO",BLUE);
             
 
 }
@@ -69,7 +69,9 @@ void onScreen::onEntering_Menue_3_active(){
     ssd1331OLED->Drawing_Rectangle_Line(0,43,60,62,31,0,0);
 }
 void onScreen::onEntering_Measurement_active(){
-
+    state(State::Measurement_active);
+    ssd1331OLED->Drawing_Rectangle_Line(18,22,67,41,0,31,0);
+    ssd1331OLED->drawString(57,21,"RUN",BLUE); 
 }
 void onScreen::onEntering_Info_SD(){
 
@@ -88,7 +90,7 @@ void onScreen::onLeaving_Menue_1_active(){
     ssd1331OLED->Drawing_Rectangle_Line(0,0,60,20,0,31,0);
 }
 void onScreen::onLeaving_UnterMenue_1_active(){
-
+    ssd1331OLED->Display_Clear_all();
 }
 void onScreen::onLeaving_Menue_2_active(){
     ssd1331OLED->Drawing_Rectangle_Line(0,22,60,41,0,31,0);
@@ -97,7 +99,8 @@ void onScreen::onLeaving_Menue_3_active(){
     ssd1331OLED->Drawing_Rectangle_Line(0,43,60,62,0,31,0);
 }
 void onScreen::onLeaving_Measurement_active(){
-
+    ssd1331OLED->Display_Clear_all();
+    onLeaving_Idle();
 }
 void onScreen::onLeaving_Info_SD(){
 
@@ -179,10 +182,20 @@ void onScreen::transition(Event ev){
 		break;
     case State::UnterMenue_1_active:
 		switch (ev) {
-        case Event::right_pressed: break;
+        case Event::right_pressed:onLeaving_UnterMenue_1_active(),onEntering_Measurement_active();break;
 		case Event::left_pressed: break;
         case Event::down_pressed: break;
         case Event::up_pressed: break;
+        case Event::none: break;
+		default: onEntering_Failure();
+		}
+		break;
+    case State::Measurement_active:
+        switch (ev) {
+		case Event::right_pressed:onLeaving_Measurement_active(); onEntering_Menue_1_active();break;
+		case Event::left_pressed: break;
+        case Event::down_pressed: break;
+        case Event::up_pressed:   break;
         case Event::none: break;
 		default: onEntering_Failure();
 		}
