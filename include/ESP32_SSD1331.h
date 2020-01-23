@@ -60,6 +60,7 @@ public:
   void Brightness(uint8_t brightness);
   void Brightness_FadeIn(uint8_t interval);
   void Brightness_FadeOut(uint8_t interval);
+  void Display_Clear_all();
   void Display_Clear(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1);
   void Display_Clear(uint8_t cs, uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1);
   void SSD1331_Copy(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1, uint8_t X, uint8_t Y);

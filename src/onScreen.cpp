@@ -3,6 +3,7 @@ const std::map<onScreen::State, std::string> onScreen::StateDescription = {
 
  {State::Failure,"Failure"},
  {State::Menue_1_active,"Menue_1_active"},
+ {State::UnterMenue_1_active,"Menue_1_active"},
  {State::Menue_2_active,"Menue_2_active"},
  {State::Menue_3_active,"Menue_3_active"},
  {State::Measurement_active,"Measurement_active"},
@@ -43,10 +44,25 @@ void onScreen::onEntering_Menue_1_active(){
     ssd1331OLED->Drawing_Rectangle_Line(0,0,60,20,31,0,0);
             
 }
+void onScreen::onEntering_UnterMenue_1_active(){
+     state(State::UnterMenue_1_active);
+     ssd1331OLED->Display_Clear_all();
+     ssd1331OLED->setTextAlignment(TEXT_ALIGN_CENTER); 
+     ssd1331OLED->setFont(Lato_Hairline_10);
+     ssd1331OLED->drawString(47,0,"Start Measurement?",BLUE);
+     ssd1331OLED->setTextAlignment(TEXT_ALIGN_RIGHT);
+     ssd1331OLED->setFont(Lato_Hairline_16);
+     ssd1331OLED->Drawing_Rectangle_Line(0,22,60,41,31,0,0);
+     ssd1331OLED->drawString(50,21,"YES",BLUE);     
+     ssd1331OLED->Drawing_Rectangle_Line(0,43,60,62,31,0,0);
+     ssd1331OLED->drawString(50,41,"NO",BLUE);
+            
+
+}
 void onScreen::onEntering_Menue_2_active(){
     state(State::Menue_2_active);
     ssd1331OLED->Drawing_Rectangle_Line(0,22,60,41,31,0,0);
-    
+
 }
 void onScreen::onEntering_Menue_3_active(){
     state(State::Menue_3_active);
@@ -70,6 +86,9 @@ void onScreen::onEntering_Failure(){
 }
 void onScreen::onLeaving_Menue_1_active(){
     ssd1331OLED->Drawing_Rectangle_Line(0,0,60,20,0,31,0);
+}
+void onScreen::onLeaving_UnterMenue_1_active(){
+
 }
 void onScreen::onLeaving_Menue_2_active(){
     ssd1331OLED->Drawing_Rectangle_Line(0,22,60,41,0,31,0);
@@ -150,10 +169,20 @@ void onScreen::transition(Event ev){
 		break;
 	case State::Menue_1_active:
 		switch (ev) {
-        case Event::right_pressed:onLeaving_Menue_1_active();onEntering_Measurement_active(); break;
+        case Event::right_pressed:onLeaving_Menue_1_active();onEntering_UnterMenue_1_active(); break;
 		case Event::left_pressed: break;
         case Event::down_pressed:onLeaving_Menue_1_active();onEntering_Menue_2_active(); break;
         case Event::up_pressed:onLeaving_Menue_1_active();onEntering_Menue_3_active(); break;
+        case Event::none: break;
+		default: onEntering_Failure();
+		}
+		break;
+    case State::UnterMenue_1_active:
+		switch (ev) {
+        case Event::right_pressed: break;
+		case Event::left_pressed: break;
+        case Event::down_pressed: break;
+        case Event::up_pressed: break;
         case Event::none: break;
 		default: onEntering_Failure();
 		}
