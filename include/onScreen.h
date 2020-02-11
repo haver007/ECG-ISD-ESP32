@@ -16,7 +16,7 @@ class onScreen
     //Defining States and Events for the State Machine
     enum class State {Failure, Menue_1_active,UnterMenue_1_active,UnterMenue_2_active, Menue_2_active,
                      Menue_3_active,NOT_Measurement,NOT_Stop, Measurement_active,Measurement_stop,
-                      WLAN_toggle, Info_SD, Idle};
+                      WLAN_toggle,WLAN_active,NOT_WLAN_ON,WLAN_toggle_OFF,WLAN_OFF,NOT_WLAN_OFF, Info_SD, Idle};
     enum class Event {right_pressed,left_pressed, down_pressed, up_pressed,none};
 
     /* --Returns the current state. */
@@ -53,6 +53,11 @@ private:
     void onEntering_NOT_Stop();
     void onEntering_Info_SD();
     void onEntering_WLAN_toggle();
+    void onEntering_WLAN_toggle_OFF();
+    void onEntering_WLAN_active();
+    void onEntering_Not_WLAN_On();
+    void onEntering_WLAN_OFF();
+     void onEntering_NOT_WLAN_OFF();
     void onEntering_Idle();
     void onEntering_Failure();
 
@@ -68,6 +73,11 @@ private:
     void onLeaving_NOT_Stop();
     void onLeaving_Info_SD();
     void onLeaving_WLAN_toggle();
+    void onLeaving_WLAN_toggle_OFF();
+    void onLeaving_WLAN_active();
+    void onLeaving_Not_WLAN_On();
+    void onLeaving_WLAN_OFF();
+    void onLeaving_NOT_WLAN_OFF();
     void onLeaving_Idle();
     void onLeaving_Failure();
 
