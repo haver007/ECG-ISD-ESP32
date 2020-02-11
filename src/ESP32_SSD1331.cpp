@@ -206,6 +206,9 @@ void ESP32_SSD1331::Brightness_FadeOut(uint8_t interval){
   }
 }
 //***********ディスプレイ消去***************************
+void ESP32_SSD1331::Display_Clear_all(){
+  Display_Clear(0,1,94,0);
+}
 void ESP32_SSD1331::Display_Clear(uint8_t cs, uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1){
   spi.setFrequency(7000000); //SSD1331 のSPI Clock Cycle Time 最低150ns
   spi.setDataMode(SPI_MODE3);
