@@ -3,10 +3,14 @@ const std::map<onScreen::State, std::string> onScreen::StateDescription = {
 
  {State::Failure,"Failure"},
  {State::Menue_1_active,"Menue_1_active"},
- {State::UnterMenue_1_active,"Menue_1_active"},
+ {State::UnterMenue_1_active,"UnterMenue_1_active"},
+ {State::UnterMenue_2_active,"UnterMenue_2_active"},
+ {State::NOT_Measurement,"NOT_Measurement"},
+ {State::NOT_Measurement,"NOT_Stop"},
  {State::Menue_2_active,"Menue_2_active"},
  {State::Menue_3_active,"Menue_3_active"},
  {State::Measurement_active,"Measurement_active"},
+ {State::Measurement_stop,"Measurement_stop"},
  {State::WLAN_toggle,"WLAN_toggle"},
  {State::Info_SD,"Info_SD"},
  {State::Idle,"Idle"} 
@@ -59,6 +63,44 @@ void onScreen::onEntering_UnterMenue_1_active(){
             
 
 }
+void onScreen::onEntering_UnterMenue_2_active(){
+    state(State::UnterMenue_2_active);
+     ssd1331OLED->Display_Clear_all();
+     ssd1331OLED->setTextAlignment(TEXT_ALIGN_CENTER); 
+     ssd1331OLED->setFont(Lato_Hairline_10);
+     ssd1331OLED->drawString(47,3," Stop Measurement?",BLUE);
+     ssd1331OLED->setTextAlignment(TEXT_ALIGN_RIGHT);
+     ssd1331OLED->setFont(Lato_Hairline_16);
+     ssd1331OLED->Drawing_Rectangle_Line(25,22,67,41,31,0,0);
+     ssd1331OLED->drawString(57,21,"YES",BLUE);     
+     ssd1331OLED->Drawing_Rectangle_Line(25,43,67,62,0,31,0);
+     ssd1331OLED->drawString(57,43,"NO",BLUE);
+}
+void onScreen::onEntering_NOT_Measurement(){
+     state(State::NOT_Measurement);
+     ssd1331OLED->setTextAlignment(TEXT_ALIGN_CENTER); 
+     ssd1331OLED->setFont(Lato_Hairline_10);
+     ssd1331OLED->drawString(47,3,"Start Measurement?",BLUE);
+     ssd1331OLED->setTextAlignment(TEXT_ALIGN_RIGHT);
+     ssd1331OLED->setFont(Lato_Hairline_16);
+     ssd1331OLED->Drawing_Rectangle_Line(25,22,67,41,0,31,0);
+     ssd1331OLED->drawString(57,21,"YES",BLUE);     
+     ssd1331OLED->Drawing_Rectangle_Line(25,43,67,62,31,0,0);
+     ssd1331OLED->drawString(57,43,"NO",BLUE);
+
+}
+void onScreen::onEntering_NOT_Stop(){
+     state(State::NOT_Stop);
+     ssd1331OLED->setTextAlignment(TEXT_ALIGN_CENTER); 
+     ssd1331OLED->setFont(Lato_Hairline_10);
+     ssd1331OLED->drawString(47,3,"Stop Measurement?",BLUE);
+     ssd1331OLED->setTextAlignment(TEXT_ALIGN_RIGHT);
+     ssd1331OLED->setFont(Lato_Hairline_16);
+     ssd1331OLED->Drawing_Rectangle_Line(25,22,67,41,0,31,0);
+     ssd1331OLED->drawString(57,21,"YES",BLUE);     
+     ssd1331OLED->Drawing_Rectangle_Line(25,43,67,62,31,0,0);
+     ssd1331OLED->drawString(57,43,"NO",BLUE);
+}
 void onScreen::onEntering_Menue_2_active(){
     state(State::Menue_2_active);
     ssd1331OLED->Drawing_Rectangle_Line(0,22,60,41,31,0,0);
@@ -72,6 +114,11 @@ void onScreen::onEntering_Measurement_active(){
     state(State::Measurement_active);
     ssd1331OLED->Drawing_Rectangle_Line(18,22,67,41,0,31,0);
     ssd1331OLED->drawString(57,21,"RUN",BLUE); 
+}
+void onScreen::onEntering_Measurement_stop(){
+    state(State::Measurement_stop);
+    ssd1331OLED->Drawing_Rectangle_Line(18,22,67,41,0,31,0);
+    ssd1331OLED->drawString(57,21,"stop",BLUE); 
 }
 void onScreen::onEntering_Info_SD(){
 
@@ -92,6 +139,8 @@ void onScreen::onLeaving_Menue_1_active(){
 void onScreen::onLeaving_UnterMenue_1_active(){
     ssd1331OLED->Display_Clear_all();
 }
+void onScreen::onLeaving_UnterMenue_2_active(){
+}
 void onScreen::onLeaving_Menue_2_active(){
     ssd1331OLED->Drawing_Rectangle_Line(0,22,60,41,0,31,0);
 }
@@ -102,6 +151,15 @@ void onScreen::onLeaving_Measurement_active(){
     ssd1331OLED->Display_Clear_all();
     onLeaving_Idle();
 }
+void onScreen::onLeaving_Measurement_stop(){
+    onLeaving_Idle();
+}
+void onScreen::onLeaving_NOT_Measurement(){
+
+}
+void onScreen::onLeaving_NOT_Stop(){
+
+}
 void onScreen::onLeaving_Info_SD(){
 
 
@@ -111,6 +169,7 @@ void onScreen::onLeaving_WLAN_toggle(){
 }
 void onScreen::onLeaving_Idle(){
             //Setup Menue when changing from idle to active
+            ssd1331OLED->Display_Clear_all();
             ssd1331OLED->Drawing_Rectangle_Line(0,22,60,41,0,31,0);
             ssd1331OLED->Drawing_Rectangle_Line(0,43,60,62,0,31,0);
             ssd1331OLED->setTextAlignment(TEXT_ALIGN_RIGHT); 
@@ -173,7 +232,7 @@ void onScreen::transition(Event ev){
 	case State::Menue_1_active:
 		switch (ev) {
         case Event::right_pressed:onLeaving_Menue_1_active();onEntering_UnterMenue_1_active(); break;
-		case Event::left_pressed: break;
+		case Event::left_pressed:onLeaving_Menue_1_active();onEntering_UnterMenue_2_active(); break;
         case Event::down_pressed:onLeaving_Menue_1_active();onEntering_Menue_2_active(); break;
         case Event::up_pressed:onLeaving_Menue_1_active();onEntering_Menue_3_active(); break;
         case Event::none: break;
@@ -184,8 +243,38 @@ void onScreen::transition(Event ev){
 		switch (ev) {
         case Event::right_pressed:onLeaving_UnterMenue_1_active(),onEntering_Measurement_active();break;
 		case Event::left_pressed: break;
-        case Event::down_pressed: break;
-        case Event::up_pressed: break;
+        case Event::down_pressed:onLeaving_UnterMenue_1_active(),onEntering_NOT_Measurement(); break;
+        case Event::up_pressed: onLeaving_UnterMenue_1_active(),onEntering_NOT_Measurement();break;
+        case Event::none: break;
+		default: onEntering_Failure();
+		}
+		break;
+    case State::UnterMenue_2_active:
+		switch (ev) {
+        case Event::right_pressed:break;
+		case Event::left_pressed:onLeaving_UnterMenue_1_active(),onEntering_Measurement_stop(); break;
+        case Event::down_pressed:onLeaving_UnterMenue_1_active(),onEntering_NOT_Stop(); break;
+        case Event::up_pressed:onLeaving_UnterMenue_1_active(),onEntering_NOT_Stop(); break;
+        case Event::none: break;
+		default: onEntering_Failure();
+		}
+		break;
+     case State::NOT_Measurement:
+		switch (ev) {
+        case Event::right_pressed:break;
+		case Event::left_pressed:onLeaving_NOT_Measurement(),onLeaving_Idle(),onEntering_Menue_1_active();break;
+        case Event::down_pressed:onLeaving_NOT_Measurement(),onEntering_UnterMenue_1_active(); break;
+        case Event::up_pressed:onLeaving_NOT_Measurement(),onEntering_UnterMenue_1_active(); break;
+        case Event::none: break;
+		default: onEntering_Failure();
+		}
+		break;
+    case State::NOT_Stop:
+		switch (ev) {
+        case Event::right_pressed:onLeaving_NOT_Stop(),onLeaving_Idle(),onEntering_Menue_1_active();break;
+		case Event::left_pressed: break;
+        case Event::down_pressed:onLeaving_NOT_Stop(),onEntering_UnterMenue_2_active(); break;
+        case Event::up_pressed:onLeaving_NOT_Stop(),onEntering_UnterMenue_2_active(); break;
         case Event::none: break;
 		default: onEntering_Failure();
 		}
@@ -194,6 +283,16 @@ void onScreen::transition(Event ev){
         switch (ev) {
 		case Event::right_pressed:onLeaving_Measurement_active(); onEntering_Menue_1_active();break;
 		case Event::left_pressed: break;
+        case Event::down_pressed: break;
+        case Event::up_pressed:   break;
+        case Event::none: break;
+		default: onEntering_Failure();
+		}
+		break;
+    case State::Measurement_stop:
+        switch (ev) {
+		case Event::right_pressed:break;
+		case Event::left_pressed: onLeaving_Measurement_stop(),onEntering_Menue_1_active();break;
         case Event::down_pressed: break;
         case Event::up_pressed:   break;
         case Event::none: break;

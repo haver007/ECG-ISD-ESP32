@@ -14,7 +14,9 @@ class onScreen
     ~onScreen();
     void loop();
     //Defining States and Events for the State Machine
-    enum class State {Failure, Menue_1_active,UnterMenue_1_active, Menue_2_active, Menue_3_active, Measurement_active, WLAN_toggle, Info_SD, Idle};
+    enum class State {Failure, Menue_1_active,UnterMenue_1_active,UnterMenue_2_active, Menue_2_active,
+                     Menue_3_active,NOT_Measurement,NOT_Stop, Measurement_active,Measurement_stop,
+                      WLAN_toggle, Info_SD, Idle};
     enum class Event {right_pressed,left_pressed, down_pressed, up_pressed,none};
 
     /* --Returns the current state. */
@@ -42,9 +44,13 @@ private:
 	/* --Methods called when entering a state. */
 	void onEntering_Menue_1_active();
     void onEntering_UnterMenue_1_active();
+    void onEntering_UnterMenue_2_active();
     void onEntering_Menue_2_active();
     void onEntering_Menue_3_active();
     void onEntering_Measurement_active();
+    void onEntering_Measurement_stop();
+    void onEntering_NOT_Measurement();
+    void onEntering_NOT_Stop();
     void onEntering_Info_SD();
     void onEntering_WLAN_toggle();
     void onEntering_Idle();
@@ -53,9 +59,13 @@ private:
 	/* --Methods called when leaving a state. */
 	void onLeaving_Menue_1_active();
     void onLeaving_UnterMenue_1_active();
+    void onLeaving_UnterMenue_2_active();
     void onLeaving_Menue_2_active();
     void onLeaving_Menue_3_active();
     void onLeaving_Measurement_active();
+    void onLeaving_Measurement_stop();
+    void onLeaving_NOT_Measurement();
+    void onLeaving_NOT_Stop();
     void onLeaving_Info_SD();
     void onLeaving_WLAN_toggle();
     void onLeaving_Idle();
