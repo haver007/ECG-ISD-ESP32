@@ -1,4 +1,6 @@
 #include "onScreen.h"
+#include "SD.h"
+#include "SPI.h"
 const std::map<onScreen::State, std::string> onScreen::StateDescription = {
 
  {State::Failure,"Failure"},
@@ -36,6 +38,7 @@ onScreen::onScreen(/* args */)
     pinMode(34, INPUT_PULLDOWN);
     pinMode(33, INPUT_PULLDOWN);
     pinMode(32, INPUT_PULLDOWN);
+
     //initialize state of Menu (IDLE)
     start();
 
@@ -126,6 +129,14 @@ void onScreen::onEntering_Measurement_stop(){
     ssd1331OLED->drawString(57,21,"stop",BLUE); 
 }
 void onScreen::onEntering_Info_SD(){
+    state(State::Info_SD);
+    char str [12];
+    int i;
+    ssd1331OLED->Display_Clear_all();
+
+    i=SD.cardSize();
+    sprintf(str,"%d",i);
+    ssd1331OLED->drawString(57,21,str,BLUE);
 
 }
 void onScreen::onEntering_WLAN_toggle(){
@@ -232,7 +243,7 @@ void onScreen::onLeaving_NOT_Stop(){
 
 }
 void onScreen::onLeaving_Info_SD(){
-
+    onLeaving_Idle();
 
 }
 void onScreen::onLeaving_WLAN_toggle(){
@@ -471,7 +482,7 @@ void onScreen::transition(Event ev){
     case State::Info_SD:
 		switch (ev) {
 		case Event::right_pressed:break;
-		case Event::left_pressed:onLeaving_Info_SD();onEntering_Menue_3_active(); break;
+		case Event::left_pressed:onLeaving_Info_SD(),onEntering_Menue_1_active(); break;
         case Event::down_pressed: break;
         case Event::up_pressed: break;
         case Event::none: break;
