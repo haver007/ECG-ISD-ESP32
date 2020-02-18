@@ -2,21 +2,24 @@
 
 setupWiFi::setupWiFi(/* args */)
 {
-    WiFi.softAP(ssid, password);
 }
 
 setupWiFi::~setupWiFi()
 {
-}
-
-void setupWiFi::loop()
-{
-    while (1)
-    {
-    }
+    turnOff();
 }
 
 IPAddress setupWiFi::getIP()
 {
     return WiFi.softAPIP();
+}
+
+bool setupWiFi::turnOff()
+{
+   return  WiFi.softAPdisconnect(true);
+}
+
+bool setupWiFi::turnOn()
+{
+   return WiFi.softAP(ssid, password);
 }
