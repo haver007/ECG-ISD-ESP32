@@ -10,7 +10,5 @@ public:
     setupWiFi(/* args */);
     ~setupWiFi();
     IPAddress getIP();
-    bool turnOff();
-    bool turnOn();
-
+    void loop();
 };
