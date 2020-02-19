@@ -1,6 +1,7 @@
 #include "onScreen.h"
 #include "SD.h"
 #include "SPI.h"
+#include "time.h"
 const std::map<onScreen::State, std::string> onScreen::StateDescription = {
 
  {State::Failure,"Failure"},
@@ -34,10 +35,11 @@ onScreen::onScreen(/* args */)
 {
     ssd1331OLED = new SSD1331Extended(SCLK_OLED, MISO_OLED, MOSI_OLED, CS_OLED, DC_OLED, RST_OLED);
     ssd1331OLED->SSD1331_Init();
-    pinMode(36, INPUT);
+    pinMode(25, INPUT_PULLDOWN);
     pinMode(34, INPUT_PULLDOWN);
     pinMode(33, INPUT_PULLDOWN);
     pinMode(32, INPUT_PULLDOWN);
+    //pinMode(26,OUTPUT);
 
     //initialize state of Menu (IDLE)
     start();
@@ -222,6 +224,7 @@ void onScreen::onLeaving_UnterMenue_1_active(){
     ssd1331OLED->Display_Clear_all();
 }
 void onScreen::onLeaving_UnterMenue_2_active(){
+    ssd1331OLED->Display_Clear_all();
 }
 void onScreen::onLeaving_Menue_2_active(){
     ssd1331OLED->Drawing_Rectangle_Line(0,22,60,41,0,31,0);
@@ -342,7 +345,7 @@ void onScreen::transition(Event ev){
     case State::UnterMenue_1_active:
 		switch (ev) {
         case Event::right_pressed:onLeaving_UnterMenue_1_active(),onEntering_Measurement_active();break;
-		case Event::left_pressed: break;
+		case Event::left_pressed:onLeaving_UnterMenue_1_active(), onLeaving_Idle(),onEntering_Menue_1_active();break;
         case Event::down_pressed:onLeaving_UnterMenue_1_active(),onEntering_NOT_Measurement(); break;
         case Event::up_pressed: onLeaving_UnterMenue_1_active(),onEntering_NOT_Measurement();break;
         case Event::none: break;
@@ -351,18 +354,18 @@ void onScreen::transition(Event ev){
 		break;
     case State::UnterMenue_2_active:
 		switch (ev) {
-        case Event::right_pressed:break;
-		case Event::left_pressed:onLeaving_UnterMenue_1_active(),onEntering_Measurement_stop(); break;
-        case Event::down_pressed:onLeaving_UnterMenue_1_active(),onEntering_NOT_Stop(); break;
-        case Event::up_pressed:onLeaving_UnterMenue_1_active(),onEntering_NOT_Stop(); break;
+        case Event::right_pressed:onLeaving_NOT_Measurement(),onLeaving_Idle(),onEntering_Menue_1_active();break;
+		case Event::left_pressed:onLeaving_UnterMenue_2_active(),onEntering_Measurement_stop(); break;
+        case Event::down_pressed:onLeaving_UnterMenue_2_active(),onEntering_NOT_Stop(); break;
+        case Event::up_pressed:onLeaving_UnterMenue_2_active(),onEntering_NOT_Stop(); break;
         case Event::none: break;
 		default: onEntering_Failure();
 		}
 		break;
      case State::NOT_Measurement:
 		switch (ev) {
-        case Event::right_pressed:break;
-		case Event::left_pressed:onLeaving_NOT_Measurement(),onLeaving_Idle(),onEntering_Menue_1_active();break;
+        case Event::left_pressed:onLeaving_NOT_Measurement(),onLeaving_Idle(),onEntering_Menue_1_active();break;
+		case Event::right_pressed:onLeaving_NOT_Measurement(),onLeaving_Idle(),onEntering_Menue_1_active();break;
         case Event::down_pressed:onLeaving_NOT_Measurement(),onEntering_UnterMenue_1_active(); break;
         case Event::up_pressed:onLeaving_NOT_Measurement(),onEntering_UnterMenue_1_active(); break;
         case Event::none: break;
@@ -372,7 +375,7 @@ void onScreen::transition(Event ev){
     case State::NOT_Stop:
 		switch (ev) {
         case Event::right_pressed:onLeaving_NOT_Stop(),onLeaving_Idle(),onEntering_Menue_1_active();break;
-		case Event::left_pressed: break;
+		case Event::left_pressed:onLeaving_NOT_Stop(),onLeaving_Idle(),onEntering_Menue_1_active(); break;
         case Event::down_pressed:onLeaving_NOT_Stop(),onEntering_UnterMenue_2_active(); break;
         case Event::up_pressed:onLeaving_NOT_Stop(),onEntering_UnterMenue_2_active(); break;
         case Event::none: break;
@@ -382,7 +385,7 @@ void onScreen::transition(Event ev){
     case State::Measurement_active:
         switch (ev) {
 		case Event::right_pressed:onLeaving_Measurement_active(); onEntering_Menue_1_active();break;
-		case Event::left_pressed: break;
+		case Event::left_pressed:onLeaving_Measurement_active(); onEntering_Menue_1_active(); break;
         case Event::down_pressed: break;
         case Event::up_pressed:   break;
         case Event::none: break;
@@ -391,7 +394,7 @@ void onScreen::transition(Event ev){
 		break;
     case State::Measurement_stop:
         switch (ev) {
-		case Event::right_pressed:break;
+		case Event::right_pressed:onLeaving_Measurement_stop(),onEntering_Menue_1_active();break;
 		case Event::left_pressed: onLeaving_Measurement_stop(),onEntering_Menue_1_active();break;
         case Event::down_pressed: break;
         case Event::up_pressed:   break;
@@ -422,7 +425,7 @@ void onScreen::transition(Event ev){
 	case State::WLAN_toggle:
 		switch (ev) {
 		case Event::right_pressed: onLeaving_WLAN_toggle(),onEntering_WLAN_active();break;
-		case Event::left_pressed: break;
+		case Event::left_pressed: onLeaving_WLAN_toggle(),onLeaving_Idle(),onEntering_Menue_1_active();break;
         case Event::down_pressed: onLeaving_WLAN_toggle(), onEntering_Not_WLAN_On(); break;
         case Event::up_pressed: onLeaving_WLAN_toggle(), onEntering_Not_WLAN_On();break;
         case Event::none: break;
@@ -432,7 +435,7 @@ void onScreen::transition(Event ev){
     case State::WLAN_active:
 		switch (ev) {
 		case Event::right_pressed: onLeaving_WLAN_active(),onEntering_Menue_1_active();break;
-		case Event::left_pressed: break;
+		case Event::left_pressed: onLeaving_WLAN_active(),onEntering_Menue_1_active();break;
         case Event::down_pressed: break;
         case Event::up_pressed: break;
         case Event::none: break;
@@ -441,7 +444,7 @@ void onScreen::transition(Event ev){
 		break;
      case State::NOT_WLAN_ON:
 		switch (ev) {
-		case Event::right_pressed:break;
+		case Event::right_pressed:onLeaving_Not_WLAN_On(),onLeaving_Idle(),onEntering_Menue_1_active();break;
 		case Event::left_pressed:onLeaving_Not_WLAN_On(),onLeaving_Idle(),onEntering_Menue_1_active(); break;
         case Event::down_pressed:onLeaving_Not_WLAN_On(),onEntering_WLAN_toggle();break;
         case Event::up_pressed: onLeaving_Not_WLAN_On(),onEntering_WLAN_toggle();break;
@@ -451,7 +454,7 @@ void onScreen::transition(Event ev){
 		break; 
     case State::WLAN_toggle_OFF:
 		switch (ev) {
-		case Event::right_pressed:break;
+		case Event::right_pressed:onLeaving_WLAN_toggle_OFF(),onLeaving_Idle(),onEntering_Menue_1_active();break;
 		case Event::left_pressed: onLeaving_WLAN_toggle_OFF(),onEntering_WLAN_OFF();break;
         case Event::down_pressed: onLeaving_WLAN_toggle_OFF(), onEntering_NOT_WLAN_OFF(); break;
         case Event::up_pressed: onLeaving_WLAN_toggle_OFF(), onEntering_NOT_WLAN_OFF();break;
@@ -462,7 +465,7 @@ void onScreen::transition(Event ev){
     case State::NOT_WLAN_OFF:
 		switch (ev) {
 		case Event::right_pressed:onLeaving_NOT_WLAN_OFF(),onLeaving_Idle(),onEntering_Menue_1_active();break;
-		case Event::left_pressed:break;
+		case Event::left_pressed:onLeaving_NOT_WLAN_OFF(),onLeaving_Idle(),onEntering_Menue_1_active();break;
         case Event::down_pressed:onLeaving_NOT_WLAN_OFF(),onEntering_WLAN_toggle_OFF();break;
         case Event::up_pressed: onLeaving_NOT_WLAN_OFF(),onEntering_WLAN_toggle_OFF();break;
         case Event::none: break;
@@ -471,7 +474,7 @@ void onScreen::transition(Event ev){
 		break;
     case State::WLAN_OFF:
 		switch (ev) {
-		case Event::right_pressed: break;
+		case Event::right_pressed:onLeaving_WLAN_OFF(),onEntering_Menue_1_active(); break;
 		case Event::left_pressed: onLeaving_WLAN_OFF(),onEntering_Menue_1_active();break;
         case Event::down_pressed: break;
         case Event::up_pressed: break;
@@ -481,7 +484,7 @@ void onScreen::transition(Event ev){
 		break; 
     case State::Info_SD:
 		switch (ev) {
-		case Event::right_pressed:break;
+		case Event::right_pressed:onLeaving_Info_SD(),onEntering_Menue_1_active();break;
 		case Event::left_pressed:onLeaving_Info_SD(),onEntering_Menue_1_active(); break;
         case Event::down_pressed: break;
         case Event::up_pressed: break;
@@ -495,27 +498,46 @@ void onScreen::transition(Event ev){
 
 //Method for checking Input changes
 void onScreen::loop()
-{   
+{   int x=0;
     while (1)
     {
+        
         Event ev= Event::none;
-        if(digitalRead(36)==0){
+
+        if(digitalRead(25)==1)
+        {
             ev= Event::right_pressed;
-            delay(500);
+            delay(600);   
+            
         }
         
         if(digitalRead(34)==1){
+            x++;
+            delay(50);
+        }
+        else{
+            x=0;
+        }
+        if(x==2)
+        {
             ev= Event::left_pressed;
-            delay(400);
+            x=0;
+            delay(600);
         }
+        
+
         if(digitalRead(32)==1){
+       
             ev= Event::down_pressed;
-            delay(400);
+            delay(600);
         }
+        
         if(digitalRead(33)==1){
+        
             ev= Event::up_pressed;
-            delay(400);
+            delay(600);
         }
+         //digitalWrite(26,0);
         
         if (ev != Event::none)
         handle(ev);
