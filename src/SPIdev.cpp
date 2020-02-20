@@ -5,18 +5,18 @@
 #include "SPIdev.h"
 
 
-SPIdev::SPIdev()
+SPIdev::SPIdev(uint8_t sck, uint8_t miso, uint8_t mosi, uint8_t cs):spi(VSPI)
 {
-	spi.begin();
+	spi.begin(sck,miso,mosi,cs);
 	setDataMode(MSBFIRST);
-	setClockDivider(SPI_CLOCK_DIV64);
+	spi.setFrequency(4000000);
 	setBitOrder(SPI_MODE0);
-	setChipSelectPin(SS);
+	setChipSelectPin(cs);
 }
 
-SPIdev::SPIdev(uint8_t dataMode, uint8_t clockDivider, uint8_t bitOrder, uint8_t chipSelectPin)
+SPIdev::SPIdev(uint8_t sck, uint8_t miso, uint8_t mosi, uint8_t cs, uint8_t dataMode, uint8_t clockDivider, uint8_t bitOrder, uint8_t chipSelectPin):spi(VSPI)
 {
-	spi.begin();
+	spi.begin(sck,miso,mosi,cs);
 	setDataMode(dataMode);
 	setClockDivider(clockDivider);
 	setBitOrder(bitOrder);

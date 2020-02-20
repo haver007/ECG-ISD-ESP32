@@ -9,9 +9,9 @@
 class SPIdev
 {
 public:
-	SPIdev();
+	SPIdev(uint8_t sck, uint8_t miso, uint8_t mosi, uint8_t cs);
 
-	SPIdev(uint8_t dataMode, uint8_t clockDivider, uint8_t bitOrder, uint8_t chipSelectPin);
+	SPIdev(uint8_t sck, uint8_t miso, uint8_t mosi, uint8_t cs,uint8_t dataMode, uint8_t clockDivider, uint8_t bitOrder, uint8_t chipSelectPin);
 
 	void write(uint8_t* data, uint8_t size);
 	uint8_t read(uint8_t data);

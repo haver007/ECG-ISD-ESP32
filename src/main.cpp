@@ -3,6 +3,7 @@
 #include "setupWiFi.h"
 #include "onScreen.h"
 #include "webAccess.h"
+#include "readECGData.h"
 
 //declare Tasks
 void taskScreen(void *parameter);
@@ -12,6 +13,7 @@ void taskWebServer(void *parameter);
 setupWiFi *crtlWiFi;
 onScreen *crtlScreen;
 webAccess *crtlWeb;
+readECGData *ctrlECG;
 
 //Vars
 enum
@@ -24,7 +26,7 @@ enum
 
 RingbufHandle_t dataBuffer;
 
-SPIClass spiSd(HSPI);
+SPIClass spiSd(VSPI);
 
 void setup()
 {
@@ -37,16 +39,20 @@ void setup()
   crtlWiFi->turnOn(); //TODO move to MENU
                       // Give Time to Complete Wifi
   delay(2000);
-  crtlScreen = new onScreen;
-
-
+  /*crtlScreen = new onScreen;
   spiSd.begin(sd_sck, sd_miso, sd_mosi, sd_ss);
-  /* initialize SD library with SPI pins */
-  if (SD.begin(sd_ss, spiSd, 24000000))
+  // initialize SD library with SPI pins 
+  if (SD.begin(sd_ss, spiSd, 2400000))
   {
     crtlWeb = new webAccess; //This should be done some where in Menu! TODO
   }
-
+*/
+  ctrlECG = new readECGData(dataBuffer);
+  ctrlECG->initialize(4);
+while (1)
+{
+  ctrlECG->loop();
+}
 
   //Create Display Task
   xTaskCreate(

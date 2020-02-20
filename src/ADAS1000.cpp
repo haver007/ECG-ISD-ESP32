@@ -4,7 +4,7 @@
 
 #include "ADAS1000.h"
 
-ADAS1000::ADAS1000()
+ADAS1000::ADAS1000(uint8_t sck, uint8_t miso, uint8_t mosi, uint8_t cs):spidev(sck,miso,mosi,cs)
 {
 }
 

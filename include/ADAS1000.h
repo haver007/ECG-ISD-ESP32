@@ -877,7 +877,7 @@ enum Leadformat
 class ADAS1000
 {
 public:
-	ADAS1000();
+	ADAS1000(uint8_t sck, uint8_t miso, uint8_t mosi, uint8_t cs);
 	void setRegisterValue(uint8_t regAddr, uint32_t regVal);
 	void setRegisterValue(uint32_t regVal);
 	void readFrame(uint8_t * dataBuffer);
