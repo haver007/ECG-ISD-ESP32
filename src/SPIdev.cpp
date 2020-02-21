@@ -5,12 +5,12 @@
 #include "SPIdev.h"
 
 
-SPIdev::SPIdev(uint8_t sck, uint8_t miso, uint8_t mosi, uint8_t cs):spi(VSPI)
+SPIdev::SPIdev(uint8_t sck, uint8_t miso, uint8_t mosi, uint8_t cs):spi(HSPI)
 {
 	spi.begin(sck,miso,mosi,cs);
-	setDataMode(MSBFIRST);
+	setDataMode(SPI_MODE3);
 	spi.setFrequency(4000000);
-	setBitOrder(SPI_MODE0);
+	setBitOrder(MSBFIRST);
 	setChipSelectPin(cs);
 }
 
