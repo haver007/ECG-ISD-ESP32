@@ -20,10 +20,9 @@ void readECGData::initialize(int divider)
 {
     adas1000->setECGCTL_SoftwareReset();
     adas1000->setECGCTL_PowerOnEnabled(true);
-    adas1000->setRegisterValue(ADAS1000_FRMCTL,0x1234);
-
-    Serial.printf("ADAS1000_CMREFCTL %x\n", adas1000->getRegisterValue(ADAS1000_CMREFCTL));
-	Serial.printf("ADAS1000_FILTCTL %x\n", adas1000->getRegisterValue(ADAS1000_FILTCTL));
+    //adas1000->setRegisterValue(ADAS1000_TESTTONE,0x123456);
+   // Serial.printf("ADAS1000_TESTTONE %x\n", adas1000->getRegisterValue(ADAS1000_TESTTONE));
+	/*Serial.printf("ADAS1000_FILTCTL %x\n", adas1000->getRegisterValue(ADAS1000_FILTCTL));
 	Serial.printf("ADAS1000_ECGCTL %x\n", adas1000->getRegisterValue(ADAS1000_ECGCTL));
 	Serial.printf("ADAS1000_FRMCTL %x\n", adas1000->getRegisterValue(ADAS1000_FRMCTL));
 	Serial.printf("ADAS1000_TESTTONE %x\n", adas1000->getRegisterValue(ADAS1000_TESTTONE));
@@ -78,7 +77,7 @@ void readECGData::initialize(int divider)
 	Serial.printf("ADAS1000_ECGCTL %x\n", adas1000->getRegisterValue(ADAS1000_ECGCTL));
 	Serial.printf("ADAS1000_FRMCTL %x\n", adas1000->getRegisterValue(ADAS1000_FRMCTL));
 	Serial.printf("ADAS1000_TESTTONE %x\n", adas1000->getRegisterValue(ADAS1000_TESTTONE));
-     
+     */
 }
 
 void readECGData::loop()
