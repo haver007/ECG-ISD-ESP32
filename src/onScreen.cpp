@@ -17,9 +17,7 @@ const std::map<onScreen::State, std::string> onScreen::StateDescription = {
  {State::WLAN_toggle,"WLAN_toggle"},
  {State::WLAN_active,"WLAN_active"},
  {State::NOT_WLAN_ON,"NOT_WLAN_ON"},
- {State::WLAN_toggle,"WLAN_toggle_OFF"},
  {State::WLAN_toggle,"WLAN_OFF"},
- {State::WLAN_toggle,"NOT_WLAN_OFF"},
  {State::Info_SD,"Info_SD"},
  {State::Idle,"Idle"} 
 
@@ -29,7 +27,8 @@ const std::map<onScreen::Event, std::string> onScreen::EventDescription = {
     { Event::left_pressed, "left_pressed"},
     { Event::down_pressed, "down_pressed"},
     { Event::up_pressed, "up_pressed"},
-    { Event::none, "none"},   
+    { Event::none, "none"},
+    { Event::going_Idle, "going_Idle_running"},   
 };
 onScreen::onScreen(/* args */)
 {
@@ -124,6 +123,7 @@ void onScreen::onEntering_Measurement_active(){
     state(State::Measurement_active);
     ssd1331OLED->Drawing_Rectangle_Line(4,22,85,41,0,31,0);
     ssd1331OLED->drawString(80,21,"RUNNING",BLUE); 
+    WLAN_flag= false;
 }
 void onScreen::onEntering_Measurement_stop(){
     state(State::Measurement_stop);
@@ -143,6 +143,20 @@ void onScreen::onEntering_Info_SD(){
 }
 void onScreen::onEntering_WLAN_toggle(){
     state(State::WLAN_toggle);
+    if(WLAN_flag== true){
+     ssd1331OLED->Display_Clear_all();
+     ssd1331OLED->setTextAlignment(TEXT_ALIGN_CENTER); 
+     ssd1331OLED->setFont(Lato_Hairline_10);
+     ssd1331OLED->drawString(47,3," Stop WLAN?",BLUE);
+     ssd1331OLED->setTextAlignment(TEXT_ALIGN_RIGHT);
+     ssd1331OLED->setFont(Lato_Hairline_16);
+     ssd1331OLED->Drawing_Rectangle_Line(25,22,67,41,31,0,0);
+     ssd1331OLED->drawString(57,21,"YES",BLUE);     
+     ssd1331OLED->Drawing_Rectangle_Line(25,43,67,62,0,31,0);
+     ssd1331OLED->drawString(57,43,"NO",BLUE);
+
+    }
+    else{
      ssd1331OLED->Display_Clear_all();
      ssd1331OLED->setTextAlignment(TEXT_ALIGN_CENTER); 
      ssd1331OLED->setFont(Lato_Hairline_10);
@@ -153,18 +167,40 @@ void onScreen::onEntering_WLAN_toggle(){
      ssd1331OLED->drawString(57,21,"YES",BLUE);     
      ssd1331OLED->Drawing_Rectangle_Line(25,43,67,62,0,31,0);
      ssd1331OLED->drawString(57,43,"NO",BLUE);
+    }
 
 }
 void onScreen::onEntering_WLAN_active(){
-    state(State::Measurement_active);
-    //ssd1331OLED->Drawing_Rectangle_Line(18,22,67,41,0,31,0);
+    state(State::WLAN_active);
+    if(WLAN_flag==true)
+    {
+    ssd1331OLED->Drawing_Rectangle_Line(5,22,92,41,0,31,0);
+    ssd1331OLED->drawString(90,21,"WLAN OFF",BLUE); 
+    WLAN_flag= false;
+    }
+    else{
     ssd1331OLED->Drawing_Rectangle_Line(5,22,90,41,0,31,0);
-    //ssd1331OLED->drawString(57,21,"WLAN is on",BLUE);
     ssd1331OLED->drawString(90,21,"WLAN is on",BLUE);
+    WLAN_flag= true;
+    }
+
 }
 
 void onScreen::onEntering_Not_WLAN_On(){
     state(State::NOT_WLAN_ON);
+    if(WLAN_flag== true){
+     ssd1331OLED->Display_Clear_all();
+     ssd1331OLED->setTextAlignment(TEXT_ALIGN_CENTER); 
+     ssd1331OLED->setFont(Lato_Hairline_10);
+     ssd1331OLED->drawString(47,3," Stop WLAN?",BLUE);
+     ssd1331OLED->setTextAlignment(TEXT_ALIGN_RIGHT);
+     ssd1331OLED->setFont(Lato_Hairline_16);
+     ssd1331OLED->Drawing_Rectangle_Line(25,22,67,41,0,31,0);
+     ssd1331OLED->drawString(57,21,"YES",BLUE);     
+     ssd1331OLED->Drawing_Rectangle_Line(25,43,67,62,31,0,0);
+     ssd1331OLED->drawString(57,43,"NO",BLUE);
+    }
+    else{
      ssd1331OLED->Display_Clear_all();
      ssd1331OLED->setTextAlignment(TEXT_ALIGN_CENTER); 
      ssd1331OLED->setFont(Lato_Hairline_10);
@@ -175,43 +211,21 @@ void onScreen::onEntering_Not_WLAN_On(){
      ssd1331OLED->drawString(57,21,"YES",BLUE);     
      ssd1331OLED->Drawing_Rectangle_Line(25,43,67,62,31,0,0);
      ssd1331OLED->drawString(57,43,"NO",BLUE);
+    }
 
 }
-void onScreen::onEntering_WLAN_toggle_OFF(){
-     state(State::WLAN_toggle_OFF);
-     ssd1331OLED->Display_Clear_all();
-     ssd1331OLED->setTextAlignment(TEXT_ALIGN_CENTER); 
-     ssd1331OLED->setFont(Lato_Hairline_10);
-     ssd1331OLED->drawString(47,3," Stop WLAN?",BLUE);
-     ssd1331OLED->setTextAlignment(TEXT_ALIGN_RIGHT);
-     ssd1331OLED->setFont(Lato_Hairline_16);
-     ssd1331OLED->Drawing_Rectangle_Line(25,22,67,41,31,0,0);
-     ssd1331OLED->drawString(57,21,"YES",BLUE);     
-     ssd1331OLED->Drawing_Rectangle_Line(25,43,67,62,0,31,0);
-     ssd1331OLED->drawString(57,43,"NO",BLUE);
-}
-void onScreen::onEntering_NOT_WLAN_OFF(){
-    state(State::NOT_WLAN_OFF);
-     ssd1331OLED->Display_Clear_all();
-     ssd1331OLED->setTextAlignment(TEXT_ALIGN_CENTER); 
-     ssd1331OLED->setFont(Lato_Hairline_10);
-     ssd1331OLED->drawString(47,3," Stop WLAN?",BLUE);
-     ssd1331OLED->setTextAlignment(TEXT_ALIGN_RIGHT);
-     ssd1331OLED->setFont(Lato_Hairline_16);
-     ssd1331OLED->Drawing_Rectangle_Line(25,22,67,41,0,31,0);
-     ssd1331OLED->drawString(57,21,"YES",BLUE);     
-     ssd1331OLED->Drawing_Rectangle_Line(25,43,67,62,31,0,0);
-     ssd1331OLED->drawString(57,43,"NO",BLUE);
 
-}
+
 void onScreen::onEntering_WLAN_OFF(){
     state(State::WLAN_OFF);
     ssd1331OLED->Drawing_Rectangle_Line(5,22,92,41,0,31,0);
     ssd1331OLED->drawString(90,21,"WLAN OFF",BLUE); 
+    WLAN_flag= false;
 
 }
 void onScreen::onEntering_Idle(){
     state(State::Idle);
+    ssd1331OLED->Display_Clear_all();
     
 }
 void onScreen::onEntering_Failure(){
@@ -243,6 +257,7 @@ void onScreen::onLeaving_NOT_Measurement(){
 
 }
 void onScreen::onLeaving_NOT_Stop(){
+    ssd1331OLED->Display_Clear_all();
 
 }
 void onScreen::onLeaving_Info_SD(){
@@ -259,19 +274,31 @@ void onScreen::onLeaving_WLAN_active(){
     ssd1331OLED->Display_Clear_all();
     onLeaving_Idle();
 }
-void onScreen::onLeaving_WLAN_toggle_OFF(){
-    ssd1331OLED->Display_Clear_all();
-}
 void onScreen::onLeaving_WLAN_OFF(){
     ssd1331OLED->Display_Clear_all();
     onLeaving_Idle();
-
-}
-void onScreen::onLeaving_NOT_WLAN_OFF(){
-
 }
 void onScreen::onLeaving_Idle(){
+            if(previousstate== State:: Idle){
             //Setup Menue when changing from idle to active
+            
+            ssd1331OLED->Display_Clear_all();
+            onEntering_Menue_1_active();
+            ssd1331OLED->Drawing_Rectangle_Line(0,22,60,41,0,31,0);
+            ssd1331OLED->Drawing_Rectangle_Line(0,43,60,62,0,31,0);
+            ssd1331OLED->setTextAlignment(TEXT_ALIGN_RIGHT); 
+            ssd1331OLED->setFont(Lato_Hairline_16);
+            //Blue = yellow :D
+            ssd1331OLED->drawString(50,1,"START",BLUE);
+            ssd1331OLED->drawString(50,21,"WLAN",BLUE);
+            ssd1331OLED->drawString(50,41,"INFO",BLUE);
+            }
+            else if (previousstate != State::Idle && zaehler==10000){
+                state(previousstate);
+                zaehler=0;
+            }
+            
+            else{
             ssd1331OLED->Display_Clear_all();
             ssd1331OLED->Drawing_Rectangle_Line(0,22,60,41,0,31,0);
             ssd1331OLED->Drawing_Rectangle_Line(0,43,60,62,0,31,0);
@@ -281,6 +308,7 @@ void onScreen::onLeaving_Idle(){
             ssd1331OLED->drawString(50,1,"START",BLUE);
             ssd1331OLED->drawString(50,21,"WLAN",BLUE);
             ssd1331OLED->drawString(50,41,"INFO",BLUE);
+            }
 }
 void onScreen::onLeaving_Failure(){
 
@@ -324,20 +352,22 @@ void onScreen::transition(Event ev){
 	switch (mystate) {
 	case State::Idle:
 		switch (ev) {
-		case Event::right_pressed: onLeaving_Idle(); onEntering_Menue_1_active(); break;
-		case Event::left_pressed: break;
-        case Event::down_pressed: break;
-        case Event::up_pressed: break;
-        case Event::none: break;
+		case Event::right_pressed: onLeaving_Idle(); break;
+		case Event::left_pressed: onLeaving_Idle();break;
+        case Event::down_pressed: onLeaving_Idle();break;
+        case Event::up_pressed:onLeaving_Idle(); break;
+        case Event::going_Idle: break;
+        case Event::none:onLeaving_Idle(); break;
 		default: onEntering_Failure();
 		}
 		break;
 	case State::Menue_1_active:
 		switch (ev) {
-        case Event::right_pressed:onLeaving_Menue_1_active();onEntering_UnterMenue_1_active(); break;
-		case Event::left_pressed:onLeaving_Menue_1_active();onEntering_UnterMenue_2_active(); break;
-        case Event::down_pressed:onLeaving_Menue_1_active();onEntering_Menue_2_active(); break;
-        case Event::up_pressed:onLeaving_Menue_1_active();onEntering_Menue_3_active(); break;
+        case Event::right_pressed:onLeaving_Menue_1_active(),onEntering_UnterMenue_1_active(); break;
+		case Event::left_pressed: break;
+        case Event::down_pressed:onLeaving_Menue_1_active(),onEntering_Menue_2_active(); break;
+        case Event::up_pressed:onLeaving_Menue_1_active(),onEntering_Menue_3_active(); break;
+        case Event::going_Idle:onLeaving_Menue_1_active(),onEntering_Idle(); break;
         case Event::none: break;
 		default: onEntering_Failure();
 		}
@@ -348,16 +378,18 @@ void onScreen::transition(Event ev){
 		case Event::left_pressed:onLeaving_UnterMenue_1_active(), onLeaving_Idle(),onEntering_Menue_1_active();break;
         case Event::down_pressed:onLeaving_UnterMenue_1_active(),onEntering_NOT_Measurement(); break;
         case Event::up_pressed: onLeaving_UnterMenue_1_active(),onEntering_NOT_Measurement();break;
+        case Event::going_Idle:onLeaving_UnterMenue_1_active(), onEntering_Idle(); break;
         case Event::none: break;
 		default: onEntering_Failure();
 		}
 		break;
     case State::UnterMenue_2_active:
 		switch (ev) {
-        case Event::right_pressed:onLeaving_NOT_Measurement(),onLeaving_Idle(),onEntering_Menue_1_active();break;
-		case Event::left_pressed:onLeaving_UnterMenue_2_active(),onEntering_Measurement_stop(); break;
+        case Event::right_pressed:onLeaving_UnterMenue_2_active(),onEntering_Measurement_stop();break;
+		case Event::left_pressed:onLeaving_UnterMenue_2_active(),onEntering_Measurement_active(); break;
         case Event::down_pressed:onLeaving_UnterMenue_2_active(),onEntering_NOT_Stop(); break;
         case Event::up_pressed:onLeaving_UnterMenue_2_active(),onEntering_NOT_Stop(); break;
+        case Event::going_Idle:onLeaving_UnterMenue_2_active(),onEntering_Idle();break;
         case Event::none: break;
 		default: onEntering_Failure();
 		}
@@ -368,26 +400,29 @@ void onScreen::transition(Event ev){
 		case Event::right_pressed:onLeaving_NOT_Measurement(),onLeaving_Idle(),onEntering_Menue_1_active();break;
         case Event::down_pressed:onLeaving_NOT_Measurement(),onEntering_UnterMenue_1_active(); break;
         case Event::up_pressed:onLeaving_NOT_Measurement(),onEntering_UnterMenue_1_active(); break;
+        case Event::going_Idle:onLeaving_NOT_Measurement(),onEntering_Idle(); break;
         case Event::none: break;
 		default: onEntering_Failure();
 		}
 		break;
     case State::NOT_Stop:
 		switch (ev) {
-        case Event::right_pressed:onLeaving_NOT_Stop(),onLeaving_Idle(),onEntering_Menue_1_active();break;
-		case Event::left_pressed:onLeaving_NOT_Stop(),onLeaving_Idle(),onEntering_Menue_1_active(); break;
+        case Event::right_pressed:onLeaving_NOT_Stop(),onEntering_Measurement_active();break;
+		case Event::left_pressed:onLeaving_NOT_Stop(),onEntering_Measurement_active(); break;
         case Event::down_pressed:onLeaving_NOT_Stop(),onEntering_UnterMenue_2_active(); break;
         case Event::up_pressed:onLeaving_NOT_Stop(),onEntering_UnterMenue_2_active(); break;
+        case Event::going_Idle:onLeaving_NOT_Stop(), onEntering_Idle();break;
         case Event::none: break;
 		default: onEntering_Failure();
 		}
 		break;
     case State::Measurement_active:
         switch (ev) {
-		case Event::right_pressed:onLeaving_Measurement_active(); onEntering_Menue_1_active();break;
-		case Event::left_pressed:onLeaving_Measurement_active(); onEntering_Menue_1_active(); break;
-        case Event::down_pressed: break;
-        case Event::up_pressed:   break;
+		case Event::right_pressed:onLeaving_Measurement_active(),onEntering_UnterMenue_2_active();break;
+		case Event::left_pressed:onLeaving_Measurement_active(),onEntering_UnterMenue_2_active(); break;
+        case Event::down_pressed: onLeaving_Measurement_active(),onEntering_UnterMenue_2_active();break;
+        case Event::up_pressed: onLeaving_Measurement_active(),onEntering_UnterMenue_2_active();  break;
+        case Event::going_Idle: onLeaving_Measurement_active(),onEntering_Idle();break;
         case Event::none: break;
 		default: onEntering_Failure();
 		}
@@ -398,26 +433,29 @@ void onScreen::transition(Event ev){
 		case Event::left_pressed: onLeaving_Measurement_stop(),onEntering_Menue_1_active();break;
         case Event::down_pressed: break;
         case Event::up_pressed:   break;
+        case Event::going_Idle:onLeaving_Measurement_stop(), onEntering_Idle(); break;
         case Event::none: break;
 		default: onEntering_Failure();
 		}
 		break;
 	case State::Menue_2_active:
 		switch (ev) {
-		case Event::right_pressed:onLeaving_Menue_2_active();onEntering_WLAN_toggle();break;
-		case Event::left_pressed: onLeaving_Menue_2_active();onEntering_WLAN_toggle_OFF();break;
-        case Event::down_pressed: onLeaving_Menue_2_active();onEntering_Menue_3_active();break;
-        case Event::up_pressed: onLeaving_Menue_2_active();onEntering_Menue_1_active();break;
+		case Event::right_pressed:onLeaving_Menue_2_active(),onEntering_WLAN_toggle();break;
+		case Event::left_pressed:break;
+        case Event::down_pressed: onLeaving_Menue_2_active(),onEntering_Menue_3_active();break;
+        case Event::up_pressed: onLeaving_Menue_2_active(),onEntering_Menue_1_active();break;
+        case Event::going_Idle: onLeaving_Menue_2_active(), onEntering_Idle();break;
         case Event::none: break;
 		default: onEntering_Failure();
 		}
 		break;
 	case State::Menue_3_active:
 		switch (ev) {
-		case Event::right_pressed:onLeaving_Menue_3_active();onEntering_Info_SD(); break;
+		case Event::right_pressed:onLeaving_Menue_3_active(),onEntering_Info_SD(); break;
 		case Event::left_pressed: break;
-        case Event::down_pressed:onLeaving_Menue_3_active();onEntering_Menue_1_active(); break;
-        case Event::up_pressed: onLeaving_Menue_3_active();onEntering_Menue_2_active();break;
+        case Event::down_pressed:onLeaving_Menue_3_active(),onEntering_Menue_1_active(); break;
+        case Event::up_pressed: onLeaving_Menue_3_active(),onEntering_Menue_2_active();break;
+        case Event::going_Idle: onLeaving_Menue_3_active(),onEntering_Idle(); break;
         case Event::none: break;
 		default: onEntering_Failure();
 		}
@@ -428,6 +466,7 @@ void onScreen::transition(Event ev){
 		case Event::left_pressed: onLeaving_WLAN_toggle(),onLeaving_Idle(),onEntering_Menue_1_active();break;
         case Event::down_pressed: onLeaving_WLAN_toggle(), onEntering_Not_WLAN_On(); break;
         case Event::up_pressed: onLeaving_WLAN_toggle(), onEntering_Not_WLAN_On();break;
+        case Event::going_Idle:onLeaving_WLAN_toggle(), onEntering_Idle();break;
         case Event::none: break;
 		default: onEntering_Failure();
 		}
@@ -438,6 +477,7 @@ void onScreen::transition(Event ev){
 		case Event::left_pressed: onLeaving_WLAN_active(),onEntering_Menue_1_active();break;
         case Event::down_pressed: break;
         case Event::up_pressed: break;
+        case Event::going_Idle: onEntering_Idle();break;
         case Event::none: break;
 		default: onEntering_Failure();
 		}
@@ -448,36 +488,19 @@ void onScreen::transition(Event ev){
 		case Event::left_pressed:onLeaving_Not_WLAN_On(),onLeaving_Idle(),onEntering_Menue_1_active(); break;
         case Event::down_pressed:onLeaving_Not_WLAN_On(),onEntering_WLAN_toggle();break;
         case Event::up_pressed: onLeaving_Not_WLAN_On(),onEntering_WLAN_toggle();break;
+        case Event::going_Idle: onEntering_Idle();break;
         case Event::none: break;
 		default: onEntering_Failure();
 		}
 		break; 
-    case State::WLAN_toggle_OFF:
-		switch (ev) {
-		case Event::right_pressed:onLeaving_WLAN_toggle_OFF(),onLeaving_Idle(),onEntering_Menue_1_active();break;
-		case Event::left_pressed: onLeaving_WLAN_toggle_OFF(),onEntering_WLAN_OFF();break;
-        case Event::down_pressed: onLeaving_WLAN_toggle_OFF(), onEntering_NOT_WLAN_OFF(); break;
-        case Event::up_pressed: onLeaving_WLAN_toggle_OFF(), onEntering_NOT_WLAN_OFF();break;
-        case Event::none: break;
-		default: onEntering_Failure();
-		}
-		break;
-    case State::NOT_WLAN_OFF:
-		switch (ev) {
-		case Event::right_pressed:onLeaving_NOT_WLAN_OFF(),onLeaving_Idle(),onEntering_Menue_1_active();break;
-		case Event::left_pressed:onLeaving_NOT_WLAN_OFF(),onLeaving_Idle(),onEntering_Menue_1_active();break;
-        case Event::down_pressed:onLeaving_NOT_WLAN_OFF(),onEntering_WLAN_toggle_OFF();break;
-        case Event::up_pressed: onLeaving_NOT_WLAN_OFF(),onEntering_WLAN_toggle_OFF();break;
-        case Event::none: break;
-		default: onEntering_Failure();
-		}
-		break;
+   
     case State::WLAN_OFF:
 		switch (ev) {
 		case Event::right_pressed:onLeaving_WLAN_OFF(),onEntering_Menue_1_active(); break;
 		case Event::left_pressed: onLeaving_WLAN_OFF(),onEntering_Menue_1_active();break;
         case Event::down_pressed: break;
         case Event::up_pressed: break;
+        case Event::going_Idle: onEntering_Idle(); break;
         case Event::none: break;
 		default: onEntering_Failure();
 		}
@@ -488,6 +511,7 @@ void onScreen::transition(Event ev){
 		case Event::left_pressed:onLeaving_Info_SD(),onEntering_Menue_1_active(); break;
         case Event::down_pressed: break;
         case Event::up_pressed: break;
+        case Event::going_Idle: onEntering_Idle(); break;
         case Event::none: break;
 		default: onEntering_Failure();
 		}
@@ -499,6 +523,7 @@ void onScreen::transition(Event ev){
 //Method for checking Input changes
 void onScreen::loop()
 {   int x=0;
+    zaehler=0;
     while (1)
     {
         
@@ -541,5 +566,24 @@ void onScreen::loop()
         
         if (ev != Event::none)
         handle(ev);
+        previousstate= mystate;
+
+        if(WLAN_flag==true && zaehler!=10000)
+        {
+            ssd1331OLED->Drawing_Rectangle_Fill(92,43,94,52,0,31,0,0,31,0);
+            ssd1331OLED->Drawing_Rectangle_Fill(88,45,90,52,0,31,0,0,31,0);
+            ssd1331OLED->Drawing_Rectangle_Fill(84,47,86,52,0,31,0,0,31,0);
+            ssd1331OLED->Drawing_Rectangle_Fill(80,49,82,52,0,31,0,0,31,0);
+        }
+
+        /*if(ev== Event::none){
+            zaehler++;
+        }
+        if(zaehler==10000)
+        {   ev= Event:: going_Idle;
+            ssd1331OLED->Display_Clear_all();
+        }
+        Serial.println(zaehler);*/
+
     }
 } 
