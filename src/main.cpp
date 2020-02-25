@@ -39,7 +39,7 @@ void setup()
   //setup Serial for Debugging
   Serial.begin(9600);
   // Setup Vars
-  dataBuffer = xRingbufferCreate(1028, RINGBUF_TYPE_NOSPLIT);
+ /* dataBuffer = xRingbufferCreate(1028, RINGBUF_TYPE_NOSPLIT);
   //Setup Objects
   
   crtlWiFi = std::make_shared<setupWiFi>();
