@@ -59,6 +59,7 @@ private:
     void onEntering_Not_WLAN_On();
     void onEntering_WLAN_OFF();
     void onEntering_Idle();
+    void onEnteringMenue();
     void onEntering_Failure();
 
 	/* --Methods called when leaving a state. */
