@@ -133,13 +133,20 @@ void onScreen::onEntering_Measurement_stop(){
 void onScreen::onEntering_Info_SD(){
     state(State::Info_SD);
     char str [12];
-    int i;
+    char stri [12];
+    uint64_t i,z;
     ssd1331OLED->Display_Clear_all();
+    ssd1331OLED->setTextAlignment(TEXT_ALIGN_CENTER); 
+    ssd1331OLED->setFont(Lato_Hairline_10);
+    ssd1331OLED->drawString(47,3," total Bytes:",BLUE);
+    i=SD.totalBytes();
+    sprintf(str,"%llu",i);
+    ssd1331OLED->drawString(57,15,str,BLUE);
 
-    i=SD.cardSize();
-    sprintf(str,"%d",i);
-    ssd1331OLED->drawString(57,21,str,BLUE);
-
+    ssd1331OLED->drawString(47,25," used Bytes:",BLUE);
+    z=SD.usedBytes();
+    sprintf(stri,"%llu",z);
+    ssd1331OLED->drawString(57,35,stri,BLUE);
 }
 void onScreen::onEntering_WLAN_toggle(){
     state(State::WLAN_toggle);
