@@ -282,32 +282,46 @@ void onScreen::onLeaving_Idle(){
             if(previousstate== State:: Idle){
             //Setup Menue when changing from idle to active
             
-            ssd1331OLED->Display_Clear_all();
-            onEntering_Menue_1_active();
-            ssd1331OLED->Drawing_Rectangle_Line(0,22,60,41,0,31,0);
-            ssd1331OLED->Drawing_Rectangle_Line(0,43,60,62,0,31,0);
-            ssd1331OLED->setTextAlignment(TEXT_ALIGN_RIGHT); 
-            ssd1331OLED->setFont(Lato_Hairline_16);
+                onEntering_Menue_1_active();
+                ssd1331OLED->Drawing_Rectangle_Line(0,22,60,41,0,31,0);
+                ssd1331OLED->Drawing_Rectangle_Line(0,43,60,62,0,31,0);
+                ssd1331OLED->setTextAlignment(TEXT_ALIGN_RIGHT); 
+                ssd1331OLED->setFont(Lato_Hairline_16);
             //Blue = yellow :D
-            ssd1331OLED->drawString(50,1,"START",BLUE);
-            ssd1331OLED->drawString(50,21,"WLAN",BLUE);
-            ssd1331OLED->drawString(50,41,"INFO",BLUE);
+                ssd1331OLED->drawString(50,1,"START",BLUE);
+                ssd1331OLED->drawString(50,21,"WLAN",BLUE);
+                ssd1331OLED->drawString(50,41,"INFO",BLUE);
             }
-            else if (previousstate != State::Idle && zaehler==10000){
-                state(previousstate);
-                zaehler=0;
+            else if (previousstate == State::Measurement_active && zaehler==1500){
+                    
+                state(State::Measurement_active);
+                ssd1331OLED->Drawing_Rectangle_Line(4,22,85,41,0,31,0);
+                ssd1331OLED->drawString(80,21,"RUNNING",BLUE); 
+                WLAN_flag= false;
             }
-            
+            else if (previousstate != State::Measurement_active && zaehler==1500){
+                
+                onEntering_Menue_1_active();
+                ssd1331OLED->Drawing_Rectangle_Line(0,22,60,41,0,31,0);
+                ssd1331OLED->Drawing_Rectangle_Line(0,43,60,62,0,31,0);
+                ssd1331OLED->setTextAlignment(TEXT_ALIGN_RIGHT); 
+                ssd1331OLED->setFont(Lato_Hairline_16);
+            //Blue = yellow :D
+                ssd1331OLED->drawString(50,1,"START",BLUE);
+                ssd1331OLED->drawString(50,21,"WLAN",BLUE);
+                ssd1331OLED->drawString(50,41,"INFO",BLUE);
+
+            }
             else{
-            ssd1331OLED->Display_Clear_all();
-            ssd1331OLED->Drawing_Rectangle_Line(0,22,60,41,0,31,0);
-            ssd1331OLED->Drawing_Rectangle_Line(0,43,60,62,0,31,0);
-            ssd1331OLED->setTextAlignment(TEXT_ALIGN_RIGHT); 
-            ssd1331OLED->setFont(Lato_Hairline_16);
-            //Blue = yellow :D
-            ssd1331OLED->drawString(50,1,"START",BLUE);
-            ssd1331OLED->drawString(50,21,"WLAN",BLUE);
-            ssd1331OLED->drawString(50,41,"INFO",BLUE);
+                ssd1331OLED->Display_Clear_all();
+                ssd1331OLED->Drawing_Rectangle_Line(0,22,60,41,0,31,0);
+                ssd1331OLED->Drawing_Rectangle_Line(0,43,60,62,0,31,0);
+                ssd1331OLED->setTextAlignment(TEXT_ALIGN_RIGHT); 
+                ssd1331OLED->setFont(Lato_Hairline_16);
+                //Blue = yellow :D
+                ssd1331OLED->drawString(50,1,"START",BLUE);
+                ssd1331OLED->drawString(50,21,"WLAN",BLUE);
+                ssd1331OLED->drawString(50,41,"INFO",BLUE);
             }
 }
 void onScreen::onLeaving_Failure(){
@@ -528,10 +542,11 @@ void onScreen::loop()
     {
         
         Event ev= Event::none;
-
+        previousstate= mystate;
         if(digitalRead(25)==1)
         {
             ev= Event::right_pressed;
+            zaehler=0;
             delay(600);   
             
         }
@@ -547,6 +562,7 @@ void onScreen::loop()
         {
             ev= Event::left_pressed;
             x=0;
+            zaehler=0;
             delay(600);
         }
         
@@ -554,21 +570,28 @@ void onScreen::loop()
         if(digitalRead(32)==1){
        
             ev= Event::down_pressed;
+            zaehler=0;
             delay(600);
         }
         
         if(digitalRead(33)==1){
         
             ev= Event::up_pressed;
+            zaehler=0;
             delay(600);
         }
-         //digitalWrite(26,0);
-        
+        if(ev== Event::none && mystate!= State:: Idle ){
+            zaehler++;
+            //delay(50);
+        }
+        if(zaehler==1500){   
+            ev= Event:: going_Idle;
+        }
+
         if (ev != Event::none)
         handle(ev);
-        previousstate= mystate;
 
-        if(WLAN_flag==true && zaehler!=10000)
+        if(WLAN_flag==true && zaehler!=1500)
         {
             ssd1331OLED->Drawing_Rectangle_Fill(92,43,94,52,0,31,0,0,31,0);
             ssd1331OLED->Drawing_Rectangle_Fill(88,45,90,52,0,31,0,0,31,0);
@@ -576,14 +599,6 @@ void onScreen::loop()
             ssd1331OLED->Drawing_Rectangle_Fill(80,49,82,52,0,31,0,0,31,0);
         }
 
-        /*if(ev== Event::none){
-            zaehler++;
-        }
-        if(zaehler==10000)
-        {   ev= Event:: going_Idle;
-            ssd1331OLED->Display_Clear_all();
-        }
-        Serial.println(zaehler);*/
-
+    
     }
 } 
