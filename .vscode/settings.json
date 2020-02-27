@@ -40,6 +40,9 @@
         "cinttypes": "cpp",
         "utility": "cpp",
         "typeinfo": "cpp",
-        "string": "cpp"
+        "string": "cpp",
+        "chrono": "cpp",
+        "ratio": "cpp",
+        "mutex": "cpp"
     }
 }

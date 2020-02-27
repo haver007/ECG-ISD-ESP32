@@ -6,7 +6,6 @@
 #include "readECGData.h"
 #include "storeDataOnSD.h"
 
-
 //declare Tasks
 void taskScreen(void *parameter);
 void taskWebServer(void *parameter);
@@ -15,11 +14,11 @@ void taskStore(void *parameter);
 
 //Declare Objects
 
-std::shared_ptr<readECGData> ctrlECG;
-std::shared_ptr<setupWiFi> crtlWiFi;
-std::shared_ptr<onScreen> crtlScreen;
-std::shared_ptr<webAccess> crtlWeb;
-std::shared_ptr<storeDataOnSD> crtlStore;
+readECGData* ctrlECG;
+setupWiFi* crtlWiFi;
+onScreen* crtlScreen;
+webAccess* crtlWeb;
+storeDataOnSD* crtlStore;
 
 //Vars
 enum
@@ -39,61 +38,31 @@ void setup()
   //setup Serial for Debugging
   Serial.begin(9600);
   // Setup Vars
- /* dataBuffer = xRingbufferCreate(1028, RINGBUF_TYPE_NOSPLIT);
+  dataBuffer = xRingbufferCreate(8196, RINGBUF_TYPE_BYTEBUF);
   //Setup Objects
-  
-  crtlWiFi = std::make_shared<setupWiFi>();
+
+  crtlWiFi = new setupWiFi();
   crtlWiFi->turnOn(); //TODO move to MENU
                       // Give Time to Complete Wifi
-  delay(2000);
- // crtlScreen = std::make_shared<onScreen>();
+  delay(5000);
+  // crtlScreen = std::make_shared<onScreen>();
   spiSd.begin(sd_sck, sd_miso, sd_mosi, sd_ss);
-  //initialize SD library with SPI pins 
-   if (SD.begin(sd_ss, spiSd, 2400000))
-   {
-     crtlWeb = std::make_shared<webAccess>(); //This should be done some where in Menu! TODO
-   }
+  //initialize SD library with SPI pins
+  if (SD.begin(sd_ss, spiSd, 24000000))
+  {
+    crtlWeb = new webAccess(); //This should be done some where in Menu! TODO
+  }
 
-  crtlStore = std::make_shared<storeDataOnSD>(dataBuffer);
-  ctrlECG = std::make_shared<readECGData>(dataBuffer);
-  ctrlECG->initialize(4);
+  crtlStore = new storeDataOnSD(dataBuffer);
+  ctrlECG = new readECGData(dataBuffer);
+  ctrlECG->initialize(2);
 
-
-  //Create Display Task
- // xTaskCreate(
-   //   taskScreen,   /* Task function. */
-//      "TaskScreen", /* String with name of task. */
-//      5000,         /* Stack size in bytes. */
-//      NULL,         /* Parameter passed as input of the task */
-//      1,            /* Priority of the task. */
-//      NULL);        /* Task handle. */
-                    //CreateWebTask
-         /* Task handle. */
- xTaskCreate(
-    taskECG,   /* Task function. */
-  "TaskECG", /* String with name of task. */
-      400000,            /* Stack size in bytes. */
-      NULL,            /* Parameter passed as input of the task */
-      1,               /* Priority of the task. */
-      NULL);           /* Task handle. */
-      
-        xTaskCreate(
-      taskWebServer,   /* Task function. */
-      "TaskWebServer", /* String with name of task. */
-      5000,            /* Stack size in bytes. */
-      NULL,            /* Parameter passed as input of the task */
-      1,               /* Priority of the task. */
-      NULL);  
- xTaskCreate(
-    taskStore,   /* Task function. */
-  "TaskStore", /* String with name of task. */
-      5000,            /* Stack size in bytes. */
-      NULL,            /* Parameter passed as input of the task */
-      1,               /* Priority of the task. */
-      NULL);           /* Task handle. */
-
+  //xTaskCreate(taskScreen, "TaskScreen",5000, NULL, 1, NULL);
+	xTaskCreatePinnedToCore(taskECG,"ReadECGData", 5000, nullptr, 1, nullptr, 0);
+  //xTaskCreate(taskECG,"ReadECGData", 5000, nullptr, 1, nullptr);
+ // xTaskCreate(taskWebServer, "TaskWebServer",5000, nullptr, 1, nullptr);
+  xTaskCreate(taskStore, "TaskStore", 5000, NULL, 1, NULL);
 }
-
 void loop()
 {
   //Just do nothing

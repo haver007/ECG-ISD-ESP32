@@ -27,6 +27,7 @@ void webAccess::loop()
     while (1)
     {
         server.handleClient();
+        vTaskDelay(20);
     }
 }
 

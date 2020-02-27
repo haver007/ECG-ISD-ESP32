@@ -979,11 +979,12 @@ public:
 
 	float voltageConversion(uint32_t data, Leadformat format);
 
+	void writeBit(uint32_t regAddr, uint32_t bitStart, bool enabled);
+	void writeBits(uint32_t regAddr, uint32_t bitStart, uint32_t length, uint32_t data);
 	virtual ~ADAS1000();
 private:
 	SPIdev spidev;
-	void writeBit(uint32_t regAddr, uint32_t bitStart, bool enabled);
-	void writeBits(uint32_t regAddr, uint32_t bitStart, uint32_t length, uint32_t data);
+
 	uint32_t log2(uint32_t number) const;
 };
 

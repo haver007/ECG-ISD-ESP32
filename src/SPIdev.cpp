@@ -9,9 +9,16 @@ SPIdev::SPIdev(uint8_t sck, uint8_t miso, uint8_t mosi, uint8_t cs):spi(HSPI)
 {
 	spi.begin(sck,miso,mosi,cs);
 	setDataMode(SPI_MODE3);
-	spi.setFrequency(4000000);
+	spi.setFrequency(1000);
 	setBitOrder(MSBFIRST);
 	setChipSelectPin(cs);
+	chipSelectEnable();
+	spi.write32(0x85E0000B);
+	spi.write32(0x8A079600);
+	spi.write32(0x81F804AE);
+	spi.write32(0x40000000);
+
+	chipSelectDisable();
 }
 
 SPIdev::SPIdev(uint8_t sck, uint8_t miso, uint8_t mosi, uint8_t cs, uint8_t dataMode, uint8_t clockDivider, uint8_t bitOrder, uint8_t chipSelectPin):spi(VSPI)

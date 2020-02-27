@@ -3,7 +3,7 @@
 class setupWiFi
 {
 private:
-    const char *ssid = "ESP32-Access-Point";
+    const char *ssid = "ESP32-Access-Point_Gerrit";
     const char *password = "123456789";
 
 public:
